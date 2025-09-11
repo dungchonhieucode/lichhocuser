@@ -61,7 +61,7 @@
         }
         .add-task-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6);
+            box-shadow: 6px 16px rgba(37, 99, 235, 0.6);
         }
     </style>
 </head>
@@ -184,9 +184,17 @@
 
     setLogLevel('debug');
 
-    // Firebase config from canvas environment
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    // Để ứng dụng hoạt động trên GitHub Pages, bạn cần dán cấu hình Firebase của mình vào đây.
+    // Bạn có thể tìm thấy cấu hình này trong Firebase Console, mục "Cài đặt dự án" > "Ứng dụng của bạn".
+    // Ví dụ:
+    const firebaseConfig = {
+        apiKey: "AIzaSyCy8NFWttHP28NyKflMD8uHJeemHYoyFa0",
+        authDomain: "lichhoc-fcf35.firebaseapp.com",
+        projectId: "lichhoc-fcf35",
+        storageBucket: "lichhoc-fcf35.firebasestorage.app",
+        messagingSenderId: "262588554121",
+        appId: "1:262588554121:web:e06728ccd6665673045f58"
+    };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -201,6 +209,8 @@
 
     // Realtime listener for Firestore (using a public collection)
     function setupRealtimeListener() {
+        // Use projectId from firebaseConfig as appId for public data
+        const appId = firebaseConfig.projectId;
         const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
         
         onSnapshot(tasksCollectionRef, (snapshot) => {
@@ -291,6 +301,7 @@
         if (draggedElement && e.target.closest('.day-card')) {
             const taskId = draggedElement.dataset.taskId;
             const newDay = e.target.closest('.day-card').id;
+            const appId = firebaseConfig.projectId;
             const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
             const taskRef = doc(tasksCollectionRef, taskId);
             
@@ -346,6 +357,7 @@
         
         try {
             // Using the new public collection path
+            const appId = firebaseConfig.projectId;
             if (currentEditingTask) {
                 // Edit existing task
                 const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
@@ -374,6 +386,7 @@
 
         try {
             // Using the new public collection path
+            const appId = firebaseConfig.projectId;
             const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
             await deleteDoc(taskRef);
             console.log("Task deleted successfully!");
