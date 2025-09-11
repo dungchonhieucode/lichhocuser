@@ -56,7 +56,8 @@
         .task-item {
             color: #E5E7EB;
             border-radius: 12px;
-            padding: 0.75rem 0.75rem;
+            /* Đã cập nhật giá trị này để nội dung hiển thị sát lề trái */
+            padding: 0.75rem 0.75rem 0.75rem 0; 
             margin-top: 0.75rem;
             font-size: 0.875rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
@@ -64,7 +65,11 @@
             word-break: break-word;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            /* Optimized for left alignment and no wrapping */
+            justify-content: flex-start;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .task-item:hover {
             transform: translateY(-2px);
@@ -102,6 +107,7 @@
             appearance: none;
             -webkit-appearance: none;
             background: transparent;
+            margin-right: 0.5rem; /* Add spacing to the right of the color picker */
         }
         .task-color-picker::-webkit-color-swatch-wrapper {
             padding: 0;
@@ -117,7 +123,7 @@
 <div class="container mx-auto max-w-4xl">
     <!-- Header -->
     <header class="flex justify-between items-center py-2 px-4">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Lịch học và việc cần làm</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Lịch học, việc cần làm</h1>
         <div class="flex items-center text-gray-500">
             <button id="theme-toggle" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mr-4">
                 <i class="fas fa-moon"></i>
@@ -205,7 +211,8 @@
         <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
         <div class="mb-4">
             <label for="task-text" class="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-            <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500">
+            <!-- Đã thêm class pl-6 để tạo khoảng cách cho văn bản khi nhập -->
+            <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500 pl-6">
         </div>
         <div class="mb-4">
             <label for="task-day" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label>
@@ -512,4 +519,3 @@
 
 </body>
 </html>
-
