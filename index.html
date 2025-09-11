@@ -10,28 +10,33 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #F8F9FA;
         }
         .day-card {
             min-height: 200px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             position: relative;
             display: flex;
             flex-direction: column;
-            padding: 1rem;
-            transition: box-shadow 0.2s ease-in-out;
+            padding: 1.5rem;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         .day-card.drag-over {
-            box-shadow: 0 0 0 4px #2563eb;
+            box-shadow: 0 0 0 4px #5B21B6;
+            transform: scale(1.02);
+        }
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
         .task-item {
-            background-color: #2563eb;
-            color: #fff;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            margin-top: 0.5rem;
+            background-color: #6D28D9;
+            color: #E5E7EB;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            margin-top: 0.75rem;
             font-size: 0.875rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             cursor: move;
@@ -39,7 +44,7 @@
         }
         .task-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         .task-item.dragging {
             opacity: 0.5;
@@ -54,14 +59,14 @@
         .add-task-btn {
             width: 4rem;
             height: 4rem;
-            background-color: #2563eb;
+            background-color: #5B21B6;
             color: #fff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 4px 12px rgba(91, 33, 182, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .add-task-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 6px 16px rgba(37, 99, 235, 0.6);
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(91, 33, 182, 0.6);
         }
     </style>
 </head>
@@ -78,7 +83,7 @@
     </header>
 
     <!-- Main Content Grid -->
-    <main class="grid grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <main class="grid grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         <!-- Day Cards -->
         <div id="T2" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
@@ -155,11 +160,11 @@
         <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
         <div class="mb-4">
             <label for="task-text" class="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-            <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500">
         </div>
         <div class="mb-4">
             <label for="task-day" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label>
-            <select id="task-day" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <select id="task-day" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500">
                 <option value="T2">T2</option>
                 <option value="T3">T3</option>
                 <option value="T4">T4</option>
@@ -171,7 +176,7 @@
         </div>
         <div class="flex justify-end space-x-2">
             <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">Hủy</button>
-            <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Lưu</button>
+            <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">Lưu</button>
         </div>
     </div>
 </div>
