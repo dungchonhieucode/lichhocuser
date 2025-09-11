@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch học, việc cần làm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #1F2937; /* Default text color for light mode */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Dark Mode Styles */
+        body.dark {
+            background-color: #1A202C;
+            color: #E2E8F0;
+        }
+        body.dark .day-card {
+            background-color: #2D3748 !important;
+        }
+        body.dark .day-card button i {
+            color: #A0AEC0;
+        }
+        body.dark h1, body.dark h2 {
+            color: #F7FAFC;
+        }
+        body.dark .text-gray-500 {
+            color: #A0AEC0;
+        }
+        body.dark .task-item {
+            color: #F8FAFC; /* Light text for tasks in dark mode */
+        }
+        .day-card {
+            min-height: 200px;
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .day-card.drag-over {
+            box-shadow: 0 0 0 4px #5B21B6;
+            transform: scale(1.02);
+        }
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+        }
+        .task-item {
+            color: #E5E7EB;
+            border-radius: 12px;
+            padding: 0.15rem;
+            margin-top: 0.75rem;
+            font-size: 1.70rem;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            white-space: normal;
+        }
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .task-item.dragging {
+            opacity: 0.5;
+        }
+        .sync-status {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .add-task-btn {
+            width: 4rem;
+            height: 4rem;
+            background-color: #5B21B6;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(91, 33, 182, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .add-task-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(91, 33, 182, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+
+<div class="container mx-auto max-w-4xl">
+    <!-- Header -->
+    <header class="flex justify-between items-center py-2 px-4">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Lịch học, việc cần làm</h1>
+        <div class="flex items-center text-gray-500">
+            <button id="theme-toggle" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mr-4">
+                <i class="fas fa-moon"></i>
+            </button>
+            <span id="sync-dot" class="inline-block w-3 h-3 rounded-full bg-green-500 sync-status mr-2"></span>
+            <span class="text-sm font-medium">Đồng bộ</span>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
+        <!-- Day Cards -->
+        <div id="T2" class="day-card" style="background-color: #FFC0CB;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T2</h2>
+                <button onclick="openAddTaskModal('T2')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T2"></div>
+        </div>
+        <div id="T3" class="day-card" style="background-color: #DDA0DD;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T3</h2>
+                <button onclick="openAddTaskModal('T3')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T3"></div>
+        </div>
+        <div id="T4" class="day-card" style="background-color: #ADD8E6;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T4</h2>
+                <button onclick="openAddTaskModal('T4')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T4"></div>
+        </div>
+        <div id="T5" class="day-card" style="background-color: #F0FFF0;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T5</h2>
+                <button onclick="openAddTaskModal('T5')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T5"></div>
+        </div>
+        <div id="T6" class="day-card" style="background-color: #F5DEB3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T6</h2>
+                <button onclick="openAddTaskModal('T6')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T6"></div>
+        </div>
+        <div id="T7" class="day-card" style="background-color: #F5F5DC;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">T7</h2>
+                <button onclick="openAddTaskModal('T7')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-T7"></div>
+        </div>
+        <div id="CN" class="day-card" style="background-color: #D3D3D3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg font-semibold text-gray-700">CN</h2>
+                <button onclick="openAddTaskModal('CN')" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="tasks-CN"></div>
+        </div>
+    </main>
+
+    <!-- Floating Add Button -->
+    <button id="main-add-btn" class="add-task-btn fixed bottom-8 right-8 rounded-full shadow-lg flex items-center justify-center text-4xl leading-none font-light">+</button>
+</div>
+
+<!-- Add/Edit Task Modal -->
+<div id="task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
+        <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
+        <div class="mb-4">
+            <label for="task-text" class="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
+            <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500 pl-6">
+        </div>
+        <div class="mb-4">
+            <label for="task-day" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label>
+            <select id="task-day" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500">
+                <option value="T2">T2</option>
+                <option value="T3">T3</option>
+                <option value="T4">T4</option>
+                <option value="T5">T5</option>
+                <option value="T6">T6</option>
+                <option value="T7">T7</option>
+                <option value="CN">CN</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="task-color" class="block text-sm font-medium text-gray-700 mb-1">Màu sắc</label>
+            <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg shadow-sm">
+        </div>
+        <!-- Thêm mục ghi nhận thời gian sửa -->
+        <div id="last-updated-container" class="mb-4">
+            <div id="task-last-updated" class="text-sm text-gray-500 mt-2"></div>
+        </div>
+        <div class="flex justify-end space-x-2">
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">Hủy</button>
+            <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firestore and Firebase JS -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    setLogLevel('debug');
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCy8NFWttHP28NyKflMD8uHJeemHYoyFa0",
+        authDomain: "lichhoc-fcf35.firebaseapp.com",
+        projectId: "lichhoc-fcf35",
+        storageBucket: "lichhoc-fcf35.firebasestorage.app",
+        messagingSenderId: "262588554121",
+        appId: "1:262588554121:web:e06728ccd6665673045f58"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let currentEditingTask = null;
+
+    setupRealtimeListener();
+
+    let draggedElement = null;
+
+    // Lấy các phần tử cần thiết
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Hàm để chuyển đổi giao diện sáng/tối
+    function toggleTheme() {
+        const isDarkMode = body.classList.toggle('dark');
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        updateThemeIcon(isDarkMode);
+    }
+
+    // Hàm cập nhật biểu tượng dựa trên giao diện
+    function updateThemeIcon(isDarkMode) {
+        if (isDarkMode) {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+    }
+
+    // Kiểm tra và áp dụng giao diện đã lưu
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark');
+        updateThemeIcon(true);
+    } else {
+        updateThemeIcon(false);
+    }
+
+    // Thêm sự kiện click cho nút chuyển đổi giao diện
+    themeToggle.addEventListener('click', toggleTheme);
+
+    function setupRealtimeListener() {
+        const appId = firebaseConfig.projectId;
+        const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+
+        onSnapshot(tasksCollectionRef, (snapshot) => {
+            const syncDot = document.getElementById('sync-dot');
+            syncDot.style.backgroundColor = 'green';
+            syncDot.classList.add('sync-status');
+
+            const tasksByDay = { 'T2': [], 'T3': [], 'T4': [], 'T5': [], 'T6': [], 'T7': [], 'CN': [] };
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.day && tasksByDay[data.day]) {
+                    tasksByDay[data.day].push({ id: doc.id, ...data });
+                }
+            });
+
+            renderTasks(tasksByDay);
+
+        }, (error) => {
+            console.error("Error listening to Firestore:", error);
+            const syncDot = document.getElementById('sync-dot');
+            syncDot.style.backgroundColor = 'red';
+            syncDot.classList.remove('sync-status');
+        });
+    }
+
+    function renderTasks(tasksByDay) {
+        Object.keys(tasksByDay).forEach(day => {
+            const container = document.getElementById(`tasks-${day}`);
+            container.innerHTML = '';
+
+            tasksByDay[day].sort((a, b) => {
+                const timeA = parseInt(a.text.match(/(\d+)/)?.[0]) || 0;
+                const timeB = parseInt(b.text.match(/(\d+)/)?.[0]) || 0;
+                return timeA - timeB;
+            });
+
+            tasksByDay[day].forEach(task => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task-item';
+                taskDiv.setAttribute('draggable', true);
+                taskDiv.setAttribute('data-task-id', task.id);
+                taskDiv.setAttribute('data-task-day', task.day);
+                taskDiv.style.backgroundColor = task.color || '#5B21B6';
+                taskDiv.textContent = task.text;
+
+                taskDiv.addEventListener('dragstart', (e) => {
+                    draggedElement = e.target;
+                    e.dataTransfer.setData('text/plain', task.id);
+                    e.target.classList.add('dragging');
+                });
+
+                taskDiv.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                    draggedElement = null;
+                });
+
+                taskDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    openEditTaskModal(task);
+                };
+                container.appendChild(taskDiv);
+            });
+        });
+    }
+
+    window.allowDrop = function(e) {
+        e.preventDefault();
+    }
+
+    window.dragEnter = function(e) {
+        if (e.target.classList.contains('day-card')) {
+            e.target.classList.add('drag-over');
+        }
+    }
+
+    window.dragLeave = function(e) {
+        if (e.target.classList.contains('day-card')) {
+            e.target.classList.remove('drag-over');
+        }
+    }
+
+    window.handleDrop = async function(e) {
+        e.preventDefault();
+        e.target.classList.remove('drag-over');
+        if (draggedElement && e.target.closest('.day-card')) {
+            const taskId = draggedElement.dataset.taskId;
+            const newDay = e.target.closest('.day-card').id;
+            const appId = firebaseConfig.projectId;
+            const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+            const taskRef = doc(tasksCollectionRef, taskId);
+
+            try {
+                const syncDot = document.getElementById('sync-dot');
+                syncDot.style.backgroundColor = 'orange';
+                syncDot.classList.remove('sync-status');
+
+                await setDoc(taskRef, { day: newDay, updatedAt: new Date().toISOString() }, { merge: true });
+                console.log("Task day updated successfully!");
+            } catch (error) {
+                console.error("Error updating task day:", error);
+                const syncDot = document.getElementById('sync-dot');
+                syncDot.style.backgroundColor = 'red';
+                syncDot.classList.remove('sync-status');
+            }
+        }
+    }
+
+    window.openAddTaskModal = function(day) {
+        document.getElementById('modal-title').textContent = 'Thêm môn học';
+        document.getElementById('task-text').value = '';
+        document.getElementById('task-day').value = day;
+        document.getElementById('task-color').value = '#5B21B6';
+        document.getElementById('task-modal').classList.remove('hidden');
+        document.getElementById('task-last-updated').textContent = '';
+        currentEditingTask = null;
+        updateModalButtons();
+    }
+
+    function openEditTaskModal(task) {
+        document.getElementById('modal-title').textContent = 'Sửa môn học';
+        document.getElementById('task-text').value = task.text;
+        document.getElementById('task-day').value = task.day;
+        document.getElementById('task-color').value = task.color || '#5B21B6';
+        document.getElementById('task-modal').classList.remove('hidden');
+
+        // Cập nhật thời gian chỉnh sửa cuối cùng
+        const lastUpdatedEl = document.getElementById('task-last-updated');
+        if (task.updatedAt) {
+            const date = new Date(task.updatedAt);
+            lastUpdatedEl.textContent = `Chỉnh sửa lần cuối: ${date.toLocaleString('vi-VN')}`;
+            lastUpdatedEl.style.display = 'block';
+        } else {
+            lastUpdatedEl.textContent = '';
+            lastUpdatedEl.style.display = 'none';
+        }
+
+        currentEditingTask = task;
+        updateModalButtons();
+    }
+
+    window.saveTask = async function() {
+        const taskText = document.getElementById('task-text').value.trim();
+        const taskDay = document.getElementById('task-day').value;
+        const taskColor = document.getElementById('task-color').value;
+
+        if (taskText === '') {
+            console.log("Task text cannot be empty.");
+            return;
+        }
+
+        const syncDot = document.getElementById('sync-dot');
+        syncDot.style.backgroundColor = 'orange';
+        syncDot.classList.remove('sync-status');
+
+        try {
+            const appId = firebaseConfig.projectId;
+            const taskData = {
+                text: taskText,
+                day: taskDay,
+                color: taskColor,
+                updatedAt: new Date().toISOString()
+            };
+            if (currentEditingTask) {
+                const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
+                await setDoc(taskRef, taskData, { merge: true });
+                console.log("Task updated successfully!");
+            } else {
+                const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+                await setDoc(doc(tasksCollectionRef), taskData);
+                console.log("Task added successfully!");
+            }
+        } catch (error) {
+            console.error("Error saving task:", error);
+            syncDot.style.backgroundColor = 'red';
+        }
+        closeModal();
+    }
+
+    window.deleteTask = async function() {
+        if (!currentEditingTask) return;
+
+        const syncDot = document.getElementById('sync-dot');
+        syncDot.style.backgroundColor = 'orange';
+        syncDot.classList.remove('sync-status');
+
+        try {
+            const appId = firebaseConfig.projectId;
+            const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
+            await deleteDoc(taskRef);
+            console.log("Task deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting task:", error);
+            syncDot.style.backgroundColor = 'red';
+        }
+        closeModal();
+    }
+
+    window.closeModal = function() {
+        document.getElementById('task-modal').classList.add('hidden');
+    }
+
+    function updateModalButtons() {
+        const deleteButton = document.getElementById('delete-task-btn');
+        if (deleteButton) {
+            deleteButton.classList.toggle('hidden', !currentEditingTask);
+        }
+    }
+
+    document.getElementById('main-add-btn').onclick = () => openAddTaskModal('T2');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const saveButton = document.getElementById('save-task-btn');
+        if (saveButton) {
+            const deleteButton = document.createElement('button');
+            deleteButton.id = 'delete-task-btn';
+            deleteButton.textContent = 'Xóa';
+            deleteButton.className = 'px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors hidden';
+            deleteButton.onclick = window.deleteTask;
+            saveButton.parentNode.insertBefore(deleteButton, saveButton);
+        }
+    });
+</script>
+
+</body>
+</html>
