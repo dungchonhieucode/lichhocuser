@@ -20,9 +20,15 @@
         }
         body.dark .day-card { background-color: #2D3748 !important; }
         body.dark .day-card button i { color: #A0AEC0; }
-        body.dark h1, body.dark h2 { color: #F7FAFC; }
+        body.dark h1, body.dark h2, body.dark #current-week-display { color: #F7FAFC; }
         body.dark .text-gray-500 { color: #A0AEC0; }
         body.dark .task-item { color: #F8FAFC; }
+        body.dark .bg-white { background-color: #2D3748; }
+        body.dark input, body.dark select { 
+            background-color: #4A5568;
+            border-color: #718096;
+            color: #F7FAFC;
+        }
         .day-card {
             min-height: 200px;
             background-color: #FFFFFF;
@@ -43,20 +49,19 @@
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
         .task-item {
-            color: #E5E7EB;
+            color: #FFFFFF;
             border-radius: 12px;
-            padding: 0.15rem;
             margin-top: 0.75rem;
-            font-size: 1rem; /* Chỉnh lại kích thước chữ cho dễ đọc */
-            line-height: 1.5rem; /* Thêm chiều cao dòng */
-            padding: 0.5rem; /* Tăng padding */
+            font-size: 1rem;
+            line-height: 1.5rem;
+            padding: 0.5rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             cursor: grab;
             display: flex;
             align-items: center;
             justify-content: flex-start;
             white-space: normal;
-            word-break: break-word; /* Đảm bảo chữ dài sẽ xuống dòng */
+            word-break: break-word;
         }
         .task-item:hover {
             transform: translateY(-2px);
@@ -92,7 +97,6 @@
         </button>
         <div class="text-center">
              <h2 id="current-week-display" class="text-lg font-semibold"></h2>
-             <!-- NÚT SAO CHÉP MỚI ĐƯỢC THÊM VÀO ĐÂY -->
              <button id="copy-last-week-btn" class="text-sm text-blue-500 hover:underline mt-1">
                 Sao chép lịch từ tuần trước
              </button>
@@ -137,7 +141,7 @@
 
 <!-- Add/Edit Task Modal -->
 <div id="task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-sm">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
         <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
         <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg mb-4 p-2" placeholder="Nội dung">
         <select id="task-day" class="w-full border-gray-300 rounded-lg mb-4 p-2">
@@ -145,11 +149,11 @@
             <option value="T5">Thứ 5</option><option value="T6">Thứ 6</option><option value="T7">Thứ 7</option>
             <option value="CN">Chủ Nhật</option>
         </select>
-        <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg mb-4">
+        <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg mb-4" value="#5B21B6">
         <div id="task-last-updated" class="text-sm text-gray-500 mb-4"></div>
         <div class="flex justify-end space-x-2">
-            <button id="delete-task-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors hidden">Xóa</button>
-            <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Hủy</button>
+            <button id="delete-task-btn" onclick="deleteTask()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors hidden">Xóa</button>
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Hủy</button>
             <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Lưu</button>
         </div>
     </div>
@@ -159,6 +163,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // --- CẤU HÌNH FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyCy8NFWttHP28NyKflMD8uHJeemHYoyFa0",
         authDomain: "lichhoc-fcf35.firebaseapp.com",
@@ -175,8 +180,10 @@
     
     let currentEditingTask = null;
     let draggedElement = null;
-    let currentDate = new Date(); // Luôn bắt đầu với tuần hiện tại
-    let unsubscribe; // Biến để lưu trữ hàm hủy listener của onSnapshot
+    let currentDate = new Date();
+    let unsubscribe;
+
+    const dayMap = { 'T2': 0, 'T3': 1, 'T4': 2, 'T5': 3, 'T6': 4, 'T7': 5, 'CN': 6 };
 
     // --- CÁC HÀM TIỆN ÍCH VỀ NGÀY THÁNG ---
     function getWeekDateRange(date) {
@@ -192,7 +199,10 @@
     }
 
     function formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
     
     function updateDateDisplay() {
@@ -205,7 +215,7 @@
     // --- CÁC HÀM CHÍNH CỦA ỨNG DỤNG ---
     function setupRealtimeListener() {
         if (unsubscribe) {
-            unsubscribe(); // Hủy listener cũ trước khi tạo cái mới
+            unsubscribe();
         }
         updateDateDisplay();
         const { start, end } = getWeekDateRange(currentDate);
@@ -255,22 +265,20 @@
         });
     }
 
-    // --- HÀM MỚI: SAO CHÉP LỊCH TỪ TUẦN TRƯỚC ---
+    // --- HÀM SAO CHÉP LỊCH (ĐÃ SỬA LỖI DỨT ĐIỂM) ---
     async function copyLastWeekSchedule() {
-        if (!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không? Các môn học hiện tại (nếu có) sẽ không bị ảnh hưởng.")) {
+        if (!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?")) {
             return;
         }
 
-        const { start: currentWeekStart } = getWeekDateRange(currentDate);
-
-        // 1. Lấy ngày của tuần trước
-        const lastWeekDate = new Date(currentWeekStart);
-        lastWeekDate.setDate(currentWeekStart.getDate() - 7);
-        const { start: lastWeekStart, end: lastWeekEnd } = getWeekDateRange(lastWeekDate);
-
+        // 1. Lấy thông tin tuần trước
+        const lastWeekQueryDate = new Date(currentDate);
+        lastWeekQueryDate.setDate(currentDate.getDate() - 7);
+        const { start: lastWeekStart, end: lastWeekEnd } = getWeekDateRange(lastWeekQueryDate);
+        
         console.log(`Đang tìm lịch từ: ${formatDate(lastWeekStart)} đến ${formatDate(lastWeekEnd)}`);
 
-        // 2. Query để lấy tất cả task của tuần trước
+        // 2. Lấy dữ liệu từ tuần trước
         const q = query(tasksCollectionRef,
             where("date", ">=", formatDate(lastWeekStart)),
             where("date", "<=", formatDate(lastWeekEnd))
@@ -282,41 +290,44 @@
             return;
         }
 
-        // 3. Chuẩn bị ghi hàng loạt (batch write) để tiết kiệm hiệu năng
+        // 3. Lấy ngày bắt đầu của tuần HIỆN TẠI để tính toán
+        const { start: currentWeekStart } = getWeekDateRange(currentDate);
         const batch = writeBatch(db);
         let copiedCount = 0;
 
+        // 4. Lặp qua các môn học của tuần trước và tính ngày mới cho tuần này
         querySnapshot.forEach(doc => {
             const task = doc.data();
             
-            // Tạo ngày mới bằng cách cộng 7 ngày vào ngày của task cũ
-            const oldDate = new Date(task.date + "T00:00:00"); // Thêm giờ để tránh lỗi timezone
-            const newDate = new Date(oldDate);
-            newDate.setDate(oldDate.getDate() + 7);
-
-            const newTaskData = {
-                ...task,
-                date: formatDate(newDate), // Cập nhật ngày mới
-                createdAt: new Date().toISOString() // Thêm ngày tạo mới
-            };
+            // Lấy offset của ngày trong tuần (T2=0, T3=1,...)
+            const dayOffset = dayMap[task.day];
             
-            // Thêm tác vụ tạo document mới vào batch
-            const newTaskRef = doc(tasksCollectionRef); // Tự động tạo ID mới
-            batch.set(newTaskRef, newTaskData);
-            copiedCount++;
+            if (dayOffset !== undefined) {
+                // Tính ngày mới dựa trên ngày bắt đầu của tuần HIỆN TẠI
+                const newDate = new Date(currentWeekStart);
+                newDate.setDate(currentWeekStart.getDate() + dayOffset);
+
+                const newTaskData = {
+                    ...task,
+                    date: formatDate(newDate), // Gán ngày mới đã tính toán lại
+                    createdAt: new Date().toISOString()
+                };
+                
+                const newTaskRef = doc(tasksCollectionRef);
+                batch.set(newTaskRef, newTaskData);
+                copiedCount++;
+            }
         });
 
-        // 4. Thực thi batch write
+        // 5. Commit vào database
         try {
             await batch.commit();
             alert(`Đã sao chép thành công ${copiedCount} môn học từ tuần trước!`);
-            // Lịch sẽ tự động cập nhật nhờ onSnapshot
         } catch (error) {
             console.error("Lỗi khi sao chép lịch: ", error);
             alert("Đã xảy ra lỗi khi sao chép lịch. Vui lòng thử lại.");
         }
     }
-
 
     // --- DRAG & DROP HANDLERS ---
     window.allowDrop = (e) => e.preventDefault();
@@ -332,7 +343,6 @@
         const newDay = dayCard.id;
         
         const { start } = getWeekDateRange(currentDate);
-        const dayMap = { 'T2': 0, 'T3': 1, 'T4': 2, 'T5': 3, 'T6': 4, 'T7': 5, 'CN': 6 };
         const newDate = new Date(start);
         newDate.setDate(start.getDate() + dayMap[newDay]);
 
@@ -380,7 +390,6 @@
 
         const taskDay = document.getElementById('task-day').value;
         const { start } = getWeekDateRange(currentDate);
-        const dayMap = { 'T2': 0, 'T3': 1, 'T4': 2, 'T5': 3, 'T6': 4, 'T7': 5, 'CN': 6 };
         const taskDate = new Date(start);
         taskDate.setDate(start.getDate() + dayMap[taskDay]);
 
@@ -396,6 +405,7 @@
             const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
             await setDoc(taskRef, taskData, { merge: true });
         } else {
+            taskData.createdAt = new Date().toISOString();
             await setDoc(doc(tasksCollectionRef), taskData);
         }
         closeModal();
@@ -434,7 +444,7 @@
     document.getElementById('next-week-btn').addEventListener('click', () => navigateToWeek(7));
     document.getElementById('copy-last-week-btn').addEventListener('click', copyLastWeekSchedule);
     
-    // Khởi chạy ứng dụng
+    // --- KHỞI CHẠY ỨNG DỤNG ---
     setupRealtimeListener();
 </script>
 
