@@ -56,10 +56,9 @@
         .task-item {
             color: #E5E7EB;
             border-radius: 12px;
-            /* Đã cập nhật để chỉ có một chút khoảng đệm ở lề trái */
-            padding: 0.75rem; 
+            padding: 0.15rem;
             margin-top: 0.75rem;
-            font-size: 0.875rem;
+            font-size: 1.70rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             cursor: grab;
             display: flex;
@@ -206,6 +205,10 @@
             <label for="task-color" class="block text-sm font-medium text-gray-700 mb-1">Màu sắc</label>
             <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg shadow-sm">
         </div>
+        <!-- Thêm mục ghi nhận thời gian sửa -->
+        <div id="last-updated-container" class="mb-4">
+            <div id="task-last-updated" class="text-sm text-gray-500 mt-2"></div>
+        </div>
         <div class="flex justify-end space-x-2">
             <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">Hủy</button>
             <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">Lưu</button>
@@ -273,12 +276,12 @@
     function setupRealtimeListener() {
         const appId = firebaseConfig.projectId;
         const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
-        
+
         onSnapshot(tasksCollectionRef, (snapshot) => {
             const syncDot = document.getElementById('sync-dot');
             syncDot.style.backgroundColor = 'green';
             syncDot.classList.add('sync-status');
-            
+
             const tasksByDay = { 'T2': [], 'T3': [], 'T4': [], 'T5': [], 'T6': [], 'T7': [], 'CN': [] };
             snapshot.forEach((doc) => {
                 const data = doc.data();
@@ -301,13 +304,13 @@
         Object.keys(tasksByDay).forEach(day => {
             const container = document.getElementById(`tasks-${day}`);
             container.innerHTML = '';
-            
+
             tasksByDay[day].sort((a, b) => {
                 const timeA = parseInt(a.text.match(/(\d+)/)?.[0]) || 0;
                 const timeB = parseInt(b.text.match(/(\d+)/)?.[0]) || 0;
                 return timeA - timeB;
             });
-            
+
             tasksByDay[day].forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task-item';
@@ -362,13 +365,13 @@
             const appId = firebaseConfig.projectId;
             const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
             const taskRef = doc(tasksCollectionRef, taskId);
-            
+
             try {
                 const syncDot = document.getElementById('sync-dot');
                 syncDot.style.backgroundColor = 'orange';
                 syncDot.classList.remove('sync-status');
-                
-                await setDoc(taskRef, { day: newDay }, { merge: true });
+
+                await setDoc(taskRef, { day: newDay, updatedAt: new Date().toISOString() }, { merge: true });
                 console.log("Task day updated successfully!");
             } catch (error) {
                 console.error("Error updating task day:", error);
@@ -385,6 +388,7 @@
         document.getElementById('task-day').value = day;
         document.getElementById('task-color').value = '#5B21B6';
         document.getElementById('task-modal').classList.remove('hidden');
+        document.getElementById('task-last-updated').textContent = '';
         currentEditingTask = null;
         updateModalButtons();
     }
@@ -395,6 +399,18 @@
         document.getElementById('task-day').value = task.day;
         document.getElementById('task-color').value = task.color || '#5B21B6';
         document.getElementById('task-modal').classList.remove('hidden');
+
+        // Cập nhật thời gian chỉnh sửa cuối cùng
+        const lastUpdatedEl = document.getElementById('task-last-updated');
+        if (task.updatedAt) {
+            const date = new Date(task.updatedAt);
+            lastUpdatedEl.textContent = `Chỉnh sửa lần cuối: ${date.toLocaleString('vi-VN')}`;
+            lastUpdatedEl.style.display = 'block';
+        } else {
+            lastUpdatedEl.textContent = '';
+            lastUpdatedEl.style.display = 'none';
+        }
+
         currentEditingTask = task;
         updateModalButtons();
     }
@@ -412,16 +428,22 @@
         const syncDot = document.getElementById('sync-dot');
         syncDot.style.backgroundColor = 'orange';
         syncDot.classList.remove('sync-status');
-        
+
         try {
             const appId = firebaseConfig.projectId;
+            const taskData = {
+                text: taskText,
+                day: taskDay,
+                color: taskColor,
+                updatedAt: new Date().toISOString()
+            };
             if (currentEditingTask) {
                 const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
-                await setDoc(taskRef, { text: taskText, day: taskDay, color: taskColor }, { merge: true });
+                await setDoc(taskRef, taskData, { merge: true });
                 console.log("Task updated successfully!");
             } else {
                 const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
-                await setDoc(doc(tasksCollectionRef), { text: taskText, day: taskDay, color: taskColor });
+                await setDoc(doc(tasksCollectionRef), taskData);
                 console.log("Task added successfully!");
             }
         } catch (error) {
@@ -449,11 +471,11 @@
         }
         closeModal();
     }
-    
+
     window.closeModal = function() {
         document.getElementById('task-modal').classList.add('hidden');
     }
-    
+
     function updateModalButtons() {
         const deleteButton = document.getElementById('delete-task-btn');
         if (deleteButton) {
