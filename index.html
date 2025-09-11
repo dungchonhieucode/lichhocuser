@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Học</title>
+    <title>Lịch học và việc cần làm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,6 +11,28 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #F8F9FA;
+            color: #1F2937; /* Default text color for light mode */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Dark Mode Styles */
+        body.dark {
+            background-color: #1A202C;
+            color: #E2E8F0;
+        }
+        body.dark .day-card {
+            background-color: #2D3748 !important;
+        }
+        body.dark .day-card button i {
+            color: #A0AEC0;
+        }
+        body.dark h1, body.dark h2 {
+            color: #F7FAFC;
+        }
+        body.dark .text-gray-500 {
+            color: #A0AEC0;
+        }
+        body.dark .task-item {
+            color: #F8FAFC; /* Light text for tasks in dark mode */
         }
         .day-card {
             min-height: 200px;
@@ -32,15 +54,17 @@
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
         .task-item {
-            background-color: #6D28D9;
             color: #E5E7EB;
             border-radius: 12px;
             padding: 0.75rem 1.25rem;
             margin-top: 0.75rem;
             font-size: 0.875rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-            cursor: move;
+            cursor: grab;
             word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .task-item:hover {
             transform: translateY(-2px);
@@ -68,24 +92,45 @@
             transform: scale(1.1);
             box-shadow: 0 6px 16px rgba(91, 33, 182, 0.6);
         }
+        .task-color-picker {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        .task-color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .task-color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-gray-100 p-4">
 
 <div class="container mx-auto max-w-4xl">
     <!-- Header -->
-    <header class="flex justify-between items-center py-6 px-4">
-        <h1 class="text-3xl font-bold text-gray-800">Lịch Học</h1>
+    <header class="flex justify-between items-center py-2 px-4">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Lịch học và việc cần làm</h1>
         <div class="flex items-center text-gray-500">
+            <button id="theme-toggle" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mr-4">
+                <i class="fas fa-moon"></i>
+            </button>
             <span id="sync-dot" class="inline-block w-3 h-3 rounded-full bg-green-500 sync-status mr-2"></span>
             <span class="text-sm font-medium">Đồng bộ</span>
         </div>
     </header>
 
     <!-- Main Content Grid -->
-    <main class="grid grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    <main class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
         <!-- Day Cards -->
-        <div id="T2" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T2" class="day-card" style="background-color: #FFC0CB;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T2</h2>
                 <button onclick="openAddTaskModal('T2')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -94,7 +139,7 @@
             </div>
             <div id="tasks-T2"></div>
         </div>
-        <div id="T3" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T3" class="day-card" style="background-color: #DDA0DD;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T3</h2>
                 <button onclick="openAddTaskModal('T3')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -103,7 +148,7 @@
             </div>
             <div id="tasks-T3"></div>
         </div>
-        <div id="T4" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T4" class="day-card" style="background-color: #ADD8E6;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T4</h2>
                 <button onclick="openAddTaskModal('T4')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -112,7 +157,7 @@
             </div>
             <div id="tasks-T4"></div>
         </div>
-        <div id="T5" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T5" class="day-card" style="background-color: #F0FFF0;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T5</h2>
                 <button onclick="openAddTaskModal('T5')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -121,7 +166,7 @@
             </div>
             <div id="tasks-T5"></div>
         </div>
-        <div id="T6" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T6" class="day-card" style="background-color: #F5DEB3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T6</h2>
                 <button onclick="openAddTaskModal('T6')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -130,7 +175,7 @@
             </div>
             <div id="tasks-T6"></div>
         </div>
-        <div id="T7" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="T7" class="day-card" style="background-color: #F5F5DC;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">T7</h2>
                 <button onclick="openAddTaskModal('T7')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -139,7 +184,7 @@
             </div>
             <div id="tasks-T7"></div>
         </div>
-        <div id="CN" class="day-card" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+        <div id="CN" class="day-card" style="background-color: #D3D3D3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg font-semibold text-gray-700">CN</h2>
                 <button onclick="openAddTaskModal('CN')" class="text-gray-500 hover:text-gray-700 transition-colors">
@@ -174,6 +219,10 @@
                 <option value="CN">CN</option>
             </select>
         </div>
+        <div class="mb-4">
+            <label for="task-color" class="block text-sm font-medium text-gray-700 mb-1">Màu sắc</label>
+            <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg shadow-sm">
+        </div>
         <div class="flex justify-end space-x-2">
             <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">Hủy</button>
             <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">Lưu</button>
@@ -189,9 +238,6 @@
 
     setLogLevel('debug');
 
-    // Để ứng dụng hoạt động trên GitHub Pages, bạn cần dán cấu hình Firebase của mình vào đây.
-    // Bạn có thể tìm thấy cấu hình này trong Firebase Console, mục "Cài đặt dự án" > "Ứng dụng của bạn".
-    // Ví dụ:
     const firebaseConfig = {
         apiKey: "AIzaSyCy8NFWttHP28NyKflMD8uHJeemHYoyFa0",
         authDomain: "lichhoc-fcf35.firebaseapp.com",
@@ -201,20 +247,47 @@
         appId: "1:262588554121:web:e06728ccd6665673045f58"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let currentEditingTask = null;
 
-    // Call the listener directly since we're using a public collection
     setupRealtimeListener();
 
-    // Drag-and-drop variables
     let draggedElement = null;
 
-    // Realtime listener for Firestore (using a public collection)
+    // Lấy các phần tử cần thiết
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Hàm để chuyển đổi giao diện sáng/tối
+    function toggleTheme() {
+        const isDarkMode = body.classList.toggle('dark');
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        updateThemeIcon(isDarkMode);
+    }
+
+    // Hàm cập nhật biểu tượng dựa trên giao diện
+    function updateThemeIcon(isDarkMode) {
+        if (isDarkMode) {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+    }
+
+    // Kiểm tra và áp dụng giao diện đã lưu
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark');
+        updateThemeIcon(true);
+    } else {
+        updateThemeIcon(false);
+    }
+
+    // Thêm sự kiện click cho nút chuyển đổi giao diện
+    themeToggle.addEventListener('click', toggleTheme);
+
     function setupRealtimeListener() {
-        // Use projectId from firebaseConfig as appId for public data
         const appId = firebaseConfig.projectId;
         const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
         
@@ -241,13 +314,11 @@
         });
     }
 
-    // Function to render tasks on the UI
     function renderTasks(tasksByDay) {
         Object.keys(tasksByDay).forEach(day => {
             const container = document.getElementById(`tasks-${day}`);
             container.innerHTML = '';
             
-            // Sort tasks by time if available, or just render as is
             tasksByDay[day].sort((a, b) => {
                 const timeA = parseInt(a.text.match(/(\d+)/)?.[0]) || 0;
                 const timeB = parseInt(b.text.match(/(\d+)/)?.[0]) || 0;
@@ -257,12 +328,29 @@
             tasksByDay[day].forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task-item';
-                taskDiv.textContent = task.text;
                 taskDiv.setAttribute('draggable', true);
                 taskDiv.setAttribute('data-task-id', task.id);
                 taskDiv.setAttribute('data-task-day', task.day);
+                taskDiv.style.backgroundColor = task.color || '#5B21B6';
 
-                // Add event listeners for drag and drop
+                const colorPicker = document.createElement('input');
+                colorPicker.type = 'color';
+                colorPicker.value = task.color || '#5B21B6';
+                colorPicker.className = 'task-color-picker';
+                colorPicker.onclick = (e) => e.stopPropagation();
+                colorPicker.oninput = (e) => {
+                    taskDiv.style.backgroundColor = e.target.value;
+                    const appId = firebaseConfig.projectId;
+                    const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+                    const taskRef = doc(tasksCollectionRef, task.id);
+                    setDoc(taskRef, { color: e.target.value }, { merge: true });
+                };
+
+                const taskTextSpan = document.createElement('span');
+                taskTextSpan.textContent = task.text;
+                taskDiv.appendChild(colorPicker);
+                taskDiv.appendChild(taskTextSpan);
+
                 taskDiv.addEventListener('dragstart', (e) => {
                     draggedElement = e.target;
                     e.dataTransfer.setData('text/plain', task.id);
@@ -283,7 +371,6 @@
         });
     }
 
-    // Drag and drop handler
     window.allowDrop = function(e) {
         e.preventDefault();
     }
@@ -326,30 +413,30 @@
         }
     }
 
-    // Function to open the add task modal
     window.openAddTaskModal = function(day) {
         document.getElementById('modal-title').textContent = 'Thêm môn học';
         document.getElementById('task-text').value = '';
         document.getElementById('task-day').value = day;
+        document.getElementById('task-color').value = '#5B21B6';
         document.getElementById('task-modal').classList.remove('hidden');
         currentEditingTask = null;
         updateModalButtons();
     }
 
-    // Function to open the edit task modal
     function openEditTaskModal(task) {
         document.getElementById('modal-title').textContent = 'Sửa môn học';
         document.getElementById('task-text').value = task.text;
         document.getElementById('task-day').value = task.day;
+        document.getElementById('task-color').value = task.color || '#5B21B6';
         document.getElementById('task-modal').classList.remove('hidden');
         currentEditingTask = task;
         updateModalButtons();
     }
 
-    // Function to save a task (add or edit)
     window.saveTask = async function() {
         const taskText = document.getElementById('task-text').value.trim();
         const taskDay = document.getElementById('task-day').value;
+        const taskColor = document.getElementById('task-color').value;
 
         if (taskText === '') {
             console.log("Task text cannot be empty.");
@@ -361,17 +448,14 @@
         syncDot.classList.remove('sync-status');
         
         try {
-            // Using the new public collection path
             const appId = firebaseConfig.projectId;
             if (currentEditingTask) {
-                // Edit existing task
                 const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
-                await setDoc(taskRef, { text: taskText, day: taskDay }, { merge: true });
+                await setDoc(taskRef, { text: taskText, day: taskDay, color: taskColor }, { merge: true });
                 console.log("Task updated successfully!");
             } else {
-                // Add new task
                 const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
-                await setDoc(doc(tasksCollectionRef), { text: taskText, day: taskDay });
+                await setDoc(doc(tasksCollectionRef), { text: taskText, day: taskDay, color: taskColor });
                 console.log("Task added successfully!");
             }
         } catch (error) {
@@ -381,7 +465,6 @@
         closeModal();
     }
 
-    // Function to delete a task
     window.deleteTask = async function() {
         if (!currentEditingTask) return;
 
@@ -390,7 +473,6 @@
         syncDot.classList.remove('sync-status');
 
         try {
-            // Using the new public collection path
             const appId = firebaseConfig.projectId;
             const taskRef = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
             await deleteDoc(taskRef);
@@ -402,12 +484,10 @@
         closeModal();
     }
     
-    // Function to close the modal
     window.closeModal = function() {
         document.getElementById('task-modal').classList.add('hidden');
     }
     
-    // Helper to toggle delete button visibility
     function updateModalButtons() {
         const deleteButton = document.getElementById('delete-task-btn');
         if (deleteButton) {
@@ -415,10 +495,8 @@
         }
     }
 
-    // Event listeners
     document.getElementById('main-add-btn').onclick = () => openAddTaskModal('T2');
 
-    // Add delete button to modal
     document.addEventListener('DOMContentLoaded', () => {
         const saveButton = document.getElementById('save-task-btn');
         if (saveButton) {
