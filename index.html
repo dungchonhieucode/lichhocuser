@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Lịch học, việc cần làm</title>
 
-  <!-- Bật dark mode theo class cho Tailwind -> phải đặt trước khi load tailwind CDN -->
-  <script>tailwind = {}; tailwind.config = { darkMode: 'class' };</script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- FullCalendar -->
@@ -21,40 +19,15 @@
     body { font-family: 'Inter', sans-serif; }
     .day-card { border-radius: 16px; min-height: 160px; transition: transform .12s, box-shadow .12s; padding: 1rem; }
     .day-card.drag-over { box-shadow: 0 0 0 4px rgba(91,33,182,0.25); transform: scale(1.02); }
-    .task-item { border-radius: 12px; padding: 0.5rem; margin-top: .5rem; color: #fff; cursor: grab; user-select: none; }
+    /* Đổi màu chữ thành màu tối để đảm bảo độ tương phản */
+    .task-item { border-radius: 12px; padding: 0.5rem; margin-top: .5rem; color: #1f2937; cursor: grab; user-select: none; font-weight: 500; }
     .task-item.dragging { opacity: .6; }
     #sidebar { z-index: 60; right: 0; top: 0; }
     /* full-width small display fixes */
     #current-week-display { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
-    /* Dark mode styles for FullCalendar */
-    .dark .fc {
-      background: #334155;
-      color: #f1f5f9;
-    }
-    .dark .fc-theme-standard td, .dark .fc-theme-standard th {
-      border-color: #475569;
-    }
-    .dark .fc-theme-standard .fc-scrollgrid {
-      border-color: #475569;
-    }
-    .dark .fc-button-primary {
-      background-color: #7c3aed;
-      border-color: #7c3aed;
-    }
-    .dark .fc-button-primary:hover {
-      background-color: #6d28d9;
-      border-color: #6d28d9;
-    }
-    .dark .fc-daygrid-day-number {
-      color: #f1f5f9;
-    }
-    .dark .fc-col-header-cell-cushion {
-      color: #f1f5f9;
-    }
   </style>
 </head>
-<body class="p-4 bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100">
+<body class="p-4 bg-gray-50 text-gray-900">
 
 <div class="container mx-auto max-w-4xl">
   <!-- Header -->
@@ -62,7 +35,7 @@
     <h1 class="text-xl sm:text-2xl font-bold">Lịch học</h1>
     <div class="flex items-center gap-3">
       <span id="sync-dot" class="inline-block w-3 h-3 rounded-full bg-gray-400"></span>
-      <button id="menu-toggle" class="text-gray-600 dark:text-gray-200 p-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800">
+      <button id="menu-toggle" class="text-gray-600 p-2 rounded hover:bg-gray-100">
         <i class="fas fa-bars"></i>
       </button>
     </div>
@@ -77,7 +50,7 @@
     <div class="text-center flex-1 px-2">
       <h2 id="current-week-display" class="text-sm font-semibold"></h2>
       <div class="text-xs text-blue-500 mt-1 hidden sm:block">
-        <button id="copy-last-week-btn-inline" class="underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Sao chép lịch từ tuần trước</button>
+        <button id="copy-last-week-btn-inline" class="underline hover:text-blue-700">Sao chép lịch từ tuần trước</button>
       </div>
     </div>
 
@@ -88,13 +61,13 @@
 
   <!-- Week view -->
   <div id="week-view" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
-    <div id="T2" class="day-card bg-pink-100 dark:bg-pink-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T2</h3><button onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 dark:hover:bg-pink-800 rounded px-2">+</button></div><div id="tasks-T2"></div></div>
-    <div id="T3" class="day-card bg-purple-100 dark:bg-purple-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T3</h3><button onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 dark:hover:bg-purple-800 rounded px-2">+</button></div><div id="tasks-T3"></div></div>
-    <div id="T4" class="day-card bg-blue-100 dark:bg-blue-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T4</h3><button onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 dark:hover:bg-blue-800 rounded px-2">+</button></div><div id="tasks-T4"></div></div>
-    <div id="T5" class="day-card bg-green-100 dark:bg-green-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T5</h3><button onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 dark:hover:bg-green-800 rounded px-2">+</button></div><div id="tasks-T5"></div></div>
-    <div id="T6" class="day-card bg-yellow-100 dark:bg-yellow-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T6</h3><button onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded px-2">+</button></div><div id="tasks-T6"></div></div>
-    <div id="T7" class="day-card bg-stone-100 dark:bg-stone-900"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T7</h3><button onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 dark:hover:bg-stone-800 rounded px-2">+</button></div><div id="tasks-T7"></div></div>
-    <div id="CN" class="day-card bg-gray-200 dark:bg-gray-800"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">CN</h3><button onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 dark:hover:bg-gray-700 rounded px-2">+</button></div><div id="tasks-CN"></div></div>
+    <div id="T2" class="day-card bg-pink-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T2</h3><button onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 rounded px-2">+</button></div><div id="tasks-T2"></div></div>
+    <div id="T3" class="day-card bg-purple-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T3</h3><button onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 rounded px-2">+</button></div><div id="tasks-T3"></div></div>
+    <div id="T4" class="day-card bg-blue-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T4</h3><button onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 rounded px-2">+</button></div><div id="tasks-T4"></div></div>
+    <div id="T5" class="day-card bg-green-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T5</h3><button onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 rounded px-2">+</button></div><div id="tasks-T5"></div></div>
+    <div id="T6" class="day-card bg-yellow-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T6</h3><button onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 rounded px-2">+</button></div><div id="tasks-T6"></div></div>
+    <div id="T7" class="day-card bg-stone-100"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">T7</h3><button onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 rounded px-2">+</button></div><div id="tasks-T7"></div></div>
+    <div id="CN" class="day-card bg-gray-200"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold">CN</h3><button onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 rounded px-2">+</button></div><div id="tasks-CN"></div></div>
   </div>
 
   <!-- Month view -->
@@ -104,32 +77,27 @@
 </div>
 
 <!-- Sidebar -->
-<div id="sidebar" class="fixed top-0 right-0 w-72 h-full bg-white dark:bg-slate-800 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out">
+<div id="sidebar" class="fixed top-0 right-0 w-72 h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out">
   <div class="p-4 space-y-4">
     <div class="flex justify-between items-center">
       <h3 class="font-semibold text-lg">Tùy chọn</h3>
-      <button id="sidebar-close" class="text-gray-600 dark:text-gray-200 p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-700">
+      <button id="sidebar-close" class="text-gray-600 p-1 rounded hover:bg-gray-100">
         <i class="fas fa-times"></i>
       </button>
     </div>
 
-    <button id="theme-toggle" class="w-full flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-slate-700 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">
-      <i id="theme-icon" class="fas fa-moon"></i> 
-      <span>Chuyển giao diện</span>
-    </button>
-
     <button id="copy-last-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
-      <i class="fas fa-copy"></i> 
+      <i class="fas fa-copy"></i>
       <span>Sao chép tuần trước</span>
     </button>
 
     <button id="toggle-view-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
-      <i id="view-icon" class="fas fa-calendar"></i> 
+      <i id="view-icon" class="fas fa-calendar"></i>
       <span id="view-text">Chuyển xem tháng</span>
     </button>
 
     <button id="delete-all-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
-      <i class="fas fa-trash-alt"></i> 
+      <i class="fas fa-trash-alt"></i>
       <span>Xóa tất cả tuần này</span>
     </button>
   </div>
@@ -137,22 +105,22 @@
 
 <!-- Modal -->
 <div id="task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-40 flex items-center justify-center p-4 hidden z-50">
-  <div class="bg-white dark:bg-slate-700 p-5 rounded-xl w-full max-w-sm shadow-lg">
+  <div class="bg-white p-5 rounded-xl w-full max-w-sm shadow-lg">
     <h2 id="modal-title" class="text-lg font-semibold mb-3">Thêm môn học</h2>
-    <input id="task-text" class="w-full border rounded p-2 mb-2 dark:bg-slate-600 dark:border-slate-500 dark:text-white" placeholder="Nội dung môn / việc"/>
+    <input id="task-text" class="w-full border rounded p-2 mb-2 bg-white border-gray-300 text-gray-900" placeholder="Nội dung môn / việc"/>
     <div class="flex gap-2 mb-2">
-      <select id="task-day" class="flex-1 border rounded p-2 dark:bg-slate-600 dark:border-slate-500 dark:text-white">
+      <select id="task-day" class="flex-1 border rounded p-2 bg-white border-gray-300 text-gray-900">
         <option value="T2">Thứ 2</option><option value="T3">Thứ 3</option><option value="T4">Thứ 4</option>
         <option value="T5">Thứ 5</option><option value="T6">Thứ 6</option><option value="T7">Thứ 7</option>
         <option value="CN">Chủ Nhật</option>
       </select>
-      <input id="task-color" type="color" class="w-14 p-0 rounded border dark:border-slate-500" value="#5B21B6"/>
+      <input id="task-color" type="color" class="w-14 p-0 rounded border border-gray-300" value="#5B21B6"/>
     </div>
     <input id="task-date" type="date" class="hidden"/>
-    <div id="task-last-updated" class="text-xs text-gray-500 dark:text-gray-400 mb-2"></div>
+    <div id="task-last-updated" class="text-xs text-gray-500 mb-2"></div>
     <div class="flex justify-end gap-2">
       <button id="delete-task-btn" onclick="deleteTask()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded hidden transition-colors">Xóa</button>
-      <button onclick="closeModal()" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-600 dark:hover:bg-slate-500 rounded transition-colors">Hủy</button>
+      <button onclick="closeModal()" class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors">Hủy</button>
       <button id="save-task-btn" onclick="saveTask()" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors">Lưu</button>
     </div>
   </div>
@@ -186,27 +154,6 @@
   let calendarInstance = null;
   const dayMap = { 'T2':0,'T3':1,'T4':2,'T5':3,'T6':4,'T7':5,'CN':6 };
   const dayIndexToKey = ['T2','T3','T4','T5','T6','T7','CN'];
-
-  // Initialize theme
-  function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    updateThemeIcon(isDark);
-  }
-
-  // Update theme icon
-  function updateThemeIcon(isDark) {
-    const icon = document.getElementById('theme-icon');
-    if (icon) {
-      icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-    }
-  }
 
   // Update view button text and icon
   function updateViewButton() {
@@ -602,25 +549,6 @@
     }
   });
 
-  // Theme toggle
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  
-  themeToggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateThemeIcon(isDark);
-    
-    // Re-render calendar if it exists to apply theme
-    if (calendarInstance) {
-      setTimeout(() => {
-        calendarInstance.render();
-      }, 100);
-    }
-    
-    closeSidebar();
-  });
-
   // Copy week actions
   document.getElementById('copy-last-week-btn').addEventListener('click', async (e) => { 
     e.stopPropagation();
@@ -711,7 +639,6 @@
 
   // Initialize everything
   function init() {
-    initTheme();
     updateViewButton();
     initDayCardDropHandlers();
     setupWeekListener();
