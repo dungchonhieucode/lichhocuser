@@ -1,0 +1,24 @@
+name: Auto Copy Weekly Schedule
+
+on:
+  schedule:
+    - cron: "0 16 * * 0"   # chạy vào 16:00 UTC Chủ Nhật = 23:00 giờ VN
+  workflow_dispatch:        # cho phép chạy thủ công
+
+jobs:
+  copy-schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm install firebase-admin
+
+      - name: Run copy schedule script
+        run: node scripts/copy-schedule.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
