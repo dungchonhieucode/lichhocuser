@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch học, việc cần làm</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; color: #1F2937; transition: background-color 0.3s, color 0.3s; }
+    body.dark { background-color: #1A202C; color: #E2E8F0; }
+    body.dark .day-card { background-color: #2D3748 !important; }
+    body.dark .day-card button i { color: #A0AEC0; }
+    body.dark h1, body.dark h2, body.dark #current-week-display { color: #F7FAFC; }
+    body.dark .text-gray-500 { color: #A0AEC0; }
+    body.dark .task-item { color: #F8FAFC; }
+    body.dark .bg-white { background-color: #2D3748; }
+    body.dark input, body.dark select { background-color: #4A5568; border-color: #718096; color: #F7FAFC; }
+    .day-card { min-height: 200px; background-color: #FFFFFF; border-radius: 16px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); position: relative; display: flex; flex-direction: column; padding: 1.5rem; transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; }
+    .day-card.drag-over { box-shadow: 0 0 0 4px #5B21B6; transform: scale(1.02); }
+    .day-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12); }
+    .task-item { color: #FFFFFF; border-radius: 12px; margin-top: 0.75rem; font-size: 1rem; line-height: 1.5rem; padding: 0.5rem; transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s; cursor: grab; display: flex; align-items: center; justify-content: flex-start; white-space: normal; word-break: break-word; }
+    .task-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
+    .task-item.dragging { opacity: 0.5; }
+    .sync-status { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body class="p-4">
+
+<div class="container mx-auto max-w-4xl">
+  <!-- Header -->
+  <header class="flex justify-between items-center py-2 px-4">
+    <h1 class="text-xl sm:text-2xl font-bold">Lịch học, việc cần làm</h1>
+    <div class="flex items-center">
+      <button id="theme-toggle" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mr-4">
+        <i class="fas fa-moon"></i>
+      </button>
+      <span id="sync-dot" class="inline-block w-3 h-3 rounded-full bg-green-500 sync-status mr-2"></span>
+      <span class="text-sm font-medium">Đồng bộ</span>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <div class="flex justify-between items-center p-4 flex-wrap gap-2">
+    <button id="prev-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm">
+      <i class="fas fa-arrow-left"></i> Tuần trước
+    </button>
+    <div class="text-center">
+      <h2 id="current-week-display" class="text-lg font-semibold"></h2>
+      <button id="copy-last-week-btn" class="text-sm text-blue-500 hover:underline mt-1">
+        Sao chép lịch từ tuần trước
+      </button>
+    </div>
+    <button id="next-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm">
+      Tuần sau <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <main class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
+    <div id="T2" class="day-card" style="background-color: #FFC0CB;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T2</h2><button onclick="openAddTaskModal('T2')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T2"></div>
+    </div>
+    <div id="T3" class="day-card" style="background-color: #DDA0DD;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T3</h2><button onclick="openAddTaskModal('T3')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T3"></div>
+    </div>
+    <div id="T4" class="day-card" style="background-color: #ADD8E6;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T4</h2><button onclick="openAddTaskModal('T4')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T4"></div>
+    </div>
+    <div id="T5" class="day-card" style="background-color: #F0FFF0;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T5</h2><button onclick="openAddTaskModal('T5')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T5"></div>
+    </div>
+    <div id="T6" class="day-card" style="background-color: #F5DEB3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T6</h2><button onclick="openAddTaskModal('T6')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T6"></div>
+    </div>
+    <div id="T7" class="day-card" style="background-color: #F5F5DC;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">T7</h2><button onclick="openAddTaskModal('T7')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-T7"></div>
+    </div>
+    <div id="CN" class="day-card" style="background-color: #D3D3D3;" ondragover="allowDrop(event)" ondrop="handleDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="flex justify-between items-center mb-2"><h2 class="text-lg font-semibold">CN</h2><button onclick="openAddTaskModal('CN')"><i class="fas fa-plus"></i></button></div>
+      <div id="tasks-CN"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm">
+    <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
+    <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg mb-4 p-2" placeholder="Nội dung">
+    <select id="task-day" class="w-full border-gray-300 rounded-lg mb-4 p-2">
+      <option value="T2">Thứ 2</option><option value="T3">Thứ 3</option><option value="T4">Thứ 4</option>
+      <option value="T5">Thứ 5</option><option value="T6">Thứ 6</option><option value="T7">Thứ 7</option>
+      <option value="CN">Chủ Nhật</option>
+    </select>
+    <input type="color" id="task-color" class="w-full h-10 border-gray-300 rounded-lg mb-4" value="#5B21B6">
+    <div id="task-last-updated" class="text-sm text-gray-500 mb-4"></div>
+    <div class="flex justify-end space-x-2">
+      <button id="delete-task-btn" onclick="deleteTask()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors hidden">Xóa</button>
+      <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Hủy</button>
+      <button id="save-task-btn" onclick="saveTask()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCy8NFWttHP28NyKflMD8uHJeemHYoyFa0",
+    authDomain: "lichhoc-fcf35.firebaseapp.com",
+    projectId: "lichhoc-fcf35",
+    storageBucket: "lichhoc-fcf35.firebasestorage.app",
+    messagingSenderId: "262588554121",
+    appId: "1:262588554121:web:e06728ccd6665673045f58"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const appId = firebaseConfig.projectId;
+  const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+
+  let currentEditingTask = null;
+  let draggedElement = null;
+  let currentDate = new Date();
+  let unsubscribe;
+
+  const dayMap = { 'T2': 0, 'T3': 1, 'T4': 2, 'T5': 3, 'T6': 4, 'T7': 5, 'CN': 6 };
+
+  // Helpers
+  function getWeekDateRange(date) {
+    const start = new Date(date);
+    const dayOfWeek = start.getDay();
+    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    start.setDate(date.getDate() - diff);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+    return { start, end };
+  }
+  function formatDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  function updateDateDisplay() {
+    const { start, end } = getWeekDateRange(currentDate);
+    const opt = { day: '2-digit', month: '2-digit' };
+    document.getElementById('current-week-display').textContent =
+      `Tuần từ ${start.toLocaleDateString('vi-VN', opt)} đến ${end.toLocaleDateString('vi-VN', opt)}`;
+  }
+
+  // Realtime
+  function setupRealtimeListener() {
+    if (unsubscribe) unsubscribe();
+    updateDateDisplay();
+    const { start, end } = getWeekDateRange(currentDate);
+    const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
+    unsubscribe = onSnapshot(q, (snapshot) => {
+      const tasksByDay = { T2: [], T3: [], T4: [], T5: [], T6: [], T7: [], CN: [] };
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.day && tasksByDay[data.day]) tasksByDay[data.day].push({ id: doc.id, ...data });
+      });
+      renderTasks(tasksByDay);
+    });
+  }
+
+  function renderTasks(tasksByDay) {
+    Object.keys(tasksByDay).forEach(day => {
+      const container = document.getElementById(`tasks-${day}`);
+      container.innerHTML = '';
+      tasksByDay[day].sort((a, b) => a.text.localeCompare(b.text));
+      tasksByDay[day].forEach(task => {
+        const div = document.createElement('div');
+        div.className = 'task-item';
+        div.setAttribute('draggable', true);
+        div.setAttribute('data-task-id', task.id);
+        div.style.backgroundColor = task.color || '#5B21B6';
+        div.textContent = task.text;
+        div.onclick = (e) => { e.stopPropagation(); openEditTaskModal(task); };
+        div.ondragstart = (e) => { draggedElement = e.target; e.target.classList.add('dragging'); };
+        div.ondragend = (e) => e.target.classList.remove('dragging');
+        container.appendChild(div);
+      });
+    });
+  }
+
+  // Copy tuần trước
+  async function copyLastWeekSchedule() {
+    if (!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?")) return;
+    const lastWeek = new Date(currentDate); lastWeek.setDate(currentDate.getDate() - 7);
+    const { start: lastStart, end: lastEnd } = getWeekDateRange(lastWeek);
+    const q = query(tasksCollectionRef, where("date", ">=", formatDate(lastStart)), where("date", "<=", formatDate(lastEnd)));
+    const snap = await getDocs(q);
+    if (snap.empty) { alert("Không có môn học nào ở tuần trước để sao chép!"); return; }
+    const { start: thisStart } = getWeekDateRange(currentDate);
+    const batch = writeBatch(db);
+    let count = 0;
+    snap.forEach(docSnap => {
+      const task = docSnap.data();
+      const offset = dayMap[task.day];
+      if (offset !== undefined) {
+        const newDate = new Date(thisStart); newDate.setDate(thisStart.getDate() + offset);
+        const newTask = { ...task, date: formatDate(newDate), createdAt: new Date().toISOString() };
+        const newRef = doc(collection(db, "artifacts", appId, "public", "data", "tasks"));
+        batch.set(newRef, newTask); count++;
+      }
+    });
+    try { await batch.commit(); alert(`Đã sao chép ${count} môn học từ tuần trước!`); }
+    catch (err) { console.error(err); alert("Lỗi khi sao chép lịch."); }
+  }
+
+  // Drag & drop
+  window.allowDrop = e => e.preventDefault();
+  window.dragEnter = e => e.target.closest('.day-card')?.classList.add('drag-over');
+  window.dragLeave = e => e.target.closest('.day-card')?.classList.remove('drag-over');
+  window.handleDrop = async e => {
+    e.preventDefault();
+    const card = e.target.closest('.day-card'); if (!draggedElement || !card) return;
+    card.classList.remove('drag-over');
+    const id = draggedElement.dataset.taskId;
+    const newDay = card.id;
+    const { start } = getWeekDateRange(currentDate);
+    const newDate = new Date(start); newDate.setDate(start.getDate() + dayMap[newDay]);
+    const ref = doc(db, "artifacts", appId, "public", "data", "tasks", id);
+    await setDoc(ref, { day: newDay, date: formatDate(newDate), updatedAt: new Date().toISOString() }, { merge: true });
+  };
+
+  // Modal
+  window.openAddTaskModal = day => { currentEditingTask = null; document.getElementById('modal-title').textContent = 'Thêm môn học'; document.getElementById('task-text').value = ''; document.getElementById('task-day').value = day; document.getElementById('task-color').value = '#5B21B6'; document.getElementById('task-last-updated').textContent = ''; document.getElementById('delete-task-btn').classList.add('hidden'); document.getElementById('task-modal').classList.remove('hidden'); }
+  window.openEditTaskModal = task => { currentEditingTask = task; document.getElementById('modal-title').textContent = 'Sửa môn học'; document.getElementById('task-text').value = task.text; document.getElementById('task-day').value = task.day; document.getElementById('task-color').value = task.color || '#5B21B6'; document.getElementById('task-last-updated').textContent = task.updatedAt ? `Sửa lần cuối: ${new Date(task.updatedAt).toLocaleString('vi-VN')}` : ''; document.getElementById('delete-task-btn').classList.remove('hidden'); document.getElementById('task-modal').classList.remove('hidden'); }
+  window.closeModal = () => document.getElementById('task-modal').classList.add('hidden');
+  window.saveTask = async () => {
+    const text = document.getElementById('task-text').value.trim(); if (!text) return;
+    const day = document.getElementById('task-day').value;
+    const { start } = getWeekDateRange(currentDate);
+    const date = new Date(start); date.setDate(start.getDate() + dayMap[day]);
+    const data = { text, day, color: document.getElementById('task-color').value, date: formatDate(date), updatedAt: new Date().toISOString() };
+    if (currentEditingTask) {
+      const ref = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id); await setDoc(ref, data, { merge: true });
+    } else { data.createdAt = new Date().toISOString(); await setDoc(doc(collection(db, "artifacts", appId, "public", "data", "tasks")), data); }
+    closeModal();
+  };
+  window.deleteTask = async () => { if (!currentEditingTask || !confirm("Xóa môn học này?")) return; const ref = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id); await deleteDoc(ref); closeModal(); }
+
+  // Events
+  function navigateToWeek(offset) { currentDate.setDate(currentDate.getDate() + offset); setupRealtimeListener(); }
+  document.getElementById('prev-week-btn').addEventListener('click', () => navigateToWeek(-7));
+  document.getElementById('next-week-btn').addEventListener('click', () => navigateToWeek(7));
+  document.getElementById('copy-last-week-btn').addEventListener('click', copyLastWeekSchedule);
+
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle'); const body = document.body;
+  function updateThemeIcon(dark) { themeToggle.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'; }
+  if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark'); updateThemeIcon(true); }
+  themeToggle.addEventListener('click', () => { const dark = body.classList.toggle('dark'); localStorage.setItem('theme', dark ? 'dark' : 'light'); updateThemeIcon(dark); });
+
+  // Init
+  setupRealtimeListener();
+</script>
+
+</body>
+</html>
