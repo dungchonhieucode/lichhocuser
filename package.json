@@ -1,9 +1,0 @@
-{
-  "name": "schedule-archiver",
-  "version": "1.0.0",
-  "description": "Kịch bản tự động lưu trữ lịch học hàng tuần từ Firestore.",
-  "main": "archive-script.js",
-  "dependencies": {
-    "firebase-admin": "^12.0.0"
-  }
-}
