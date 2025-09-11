@@ -56,20 +56,16 @@
         .task-item {
             color: #E5E7EB;
             border-radius: 12px;
-            /* Đã cập nhật giá trị này để nội dung hiển thị sát lề trái */
-            padding: 0.75rem 0.75rem 0.75rem 0; 
+            /* Đã cập nhật để chỉ có một chút khoảng đệm ở lề trái */
+            padding: 0.75rem; 
             margin-top: 0.75rem;
             font-size: 0.875rem;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             cursor: grab;
-            word-break: break-word;
             display: flex;
             align-items: center;
-            /* Optimized for left alignment and no wrapping */
             justify-content: flex-start;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
         }
         .task-item:hover {
             transform: translateY(-2px);
@@ -96,25 +92,6 @@
         .add-task-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 16px rgba(91, 33, 182, 0.6);
-        }
-        .task-color-picker {
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: none;
-            padding: 0;
-            appearance: none;
-            -webkit-appearance: none;
-            background: transparent;
-            margin-right: 0.5rem; /* Add spacing to the right of the color picker */
-        }
-        .task-color-picker::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        .task-color-picker::-webkit-color-swatch {
-            border: none;
-            border-radius: 50%;
         }
     </style>
 </head>
@@ -211,7 +188,6 @@
         <h2 id="modal-title" class="text-xl font-bold mb-4">Thêm môn học</h2>
         <div class="mb-4">
             <label for="task-text" class="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-            <!-- Đã thêm class pl-6 để tạo khoảng cách cho văn bản khi nhập -->
             <input type="text" id="task-text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-purple-500 focus:ring-purple-500 pl-6">
         </div>
         <div class="mb-4">
@@ -339,24 +315,7 @@
                 taskDiv.setAttribute('data-task-id', task.id);
                 taskDiv.setAttribute('data-task-day', task.day);
                 taskDiv.style.backgroundColor = task.color || '#5B21B6';
-
-                const colorPicker = document.createElement('input');
-                colorPicker.type = 'color';
-                colorPicker.value = task.color || '#5B21B6';
-                colorPicker.className = 'task-color-picker';
-                colorPicker.onclick = (e) => e.stopPropagation();
-                colorPicker.oninput = (e) => {
-                    taskDiv.style.backgroundColor = e.target.value;
-                    const appId = firebaseConfig.projectId;
-                    const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
-                    const taskRef = doc(tasksCollectionRef, task.id);
-                    setDoc(taskRef, { color: e.target.value }, { merge: true });
-                };
-
-                const taskTextSpan = document.createElement('span');
-                taskTextSpan.textContent = task.text;
-                taskDiv.appendChild(colorPicker);
-                taskDiv.appendChild(taskTextSpan);
+                taskDiv.textContent = task.text;
 
                 taskDiv.addEventListener('dragstart', (e) => {
                     draggedElement = e.target;
