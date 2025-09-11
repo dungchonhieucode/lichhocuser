@@ -1,1 +1,41 @@
+# Tên của workflow, bạn sẽ thấy tên này trong tab "Actions" trên GitHub
+name: Lưu trữ Lịch học Hàng tuần
+
+on:
+  # Lên lịch chạy tự động
+  schedule:
+    # Cấu hình cron để chạy vào 23:00 Chủ Nhật hàng tuần (giờ Việt Nam)
+    # 23:00 GMT+7 tương đương 16:00 UTC
+    - cron: '0 16 * * 0'
+  # Cho phép chạy workflow thủ công từ tab Actions trên GitHub (để kiểm tra)
+  workflow_dispatch:
+
+jobs:
+  archive:
+    # Sử dụng máy ảo Ubuntu phiên bản mới nhất để chạy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Lấy mã nguồn từ repository của bạn
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Cài đặt môi trường Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Sử dụng Node.js phiên bản 18
+
+      # 3. Cài đặt các thư viện cần thiết từ file package.json
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Chạy kịch bản lưu trữ
+      - name: Run archive script
+        run: node archive-script.js
+        env:
+          # Truyền nội dung của secret vào biến môi trường
+          # GitHub Actions sẽ tự động thay thế ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          # bằng giá trị bạn đã thiết lập trong cài đặt repository
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
