@@ -87,9 +87,50 @@
       user-select: none; 
       font-weight: 500;
       transition: all 0.2s ease;
+      position: relative;
     }
 
-    .task-item.dragging { opacity: .6; }
+    .task-item:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .task-item.dragging { 
+      opacity: .6; 
+      transform: rotate(5deg);
+      z-index: 1000;
+    }
+
+    .task-item.drag-placeholder {
+      opacity: 0.3;
+      background-color: #e5e7eb !important;
+      border: 2px dashed #9ca3af;
+    }
+
+    .task-item .drag-handle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      cursor: grab;
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+    }
+
+    .task-item:hover .drag-handle {
+      opacity: 1;
+    }
+
+    .task-container {
+      min-height: 20px;
+    }
+
+    .task-container.drag-over-container {
+      background-color: rgba(91,33,182,0.1);
+      border-radius: 8px;
+    }
 
     #sidebar { 
       z-index: 60; 
@@ -177,11 +218,6 @@
       will-change: transform;
     }
 
-    .task-item:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow);
-    }
-
     /* Color variations for days in dark mode */
     [data-theme="dark"] .day-pink { background-color: #4c1d95; }
     [data-theme="dark"] .day-purple { background-color: #581c87; }
@@ -246,13 +282,13 @@
 
   <!-- Week view -->
   <div id="week-view" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
-    <div id="T2" class="day-card day-pink"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T2</h3><button onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 dark:hover:bg-pink-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T2"></div></div>
-    <div id="T3" class="day-card day-purple"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T3</h3><button onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 dark:hover:bg-purple-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T3"></div></div>
-    <div id="T4" class="day-card day-blue"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T4</h3><button onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 dark:hover:bg-blue-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T4"></div></div>
-    <div id="T5" class="day-card day-green"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T5</h3><button onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 dark:hover:bg-green-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T5"></div></div>
-    <div id="T6" class="day-card day-yellow"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T6</h3><button onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T6"></div></div>
-    <div id="T7" class="day-card day-stone"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T7</h3><button onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 dark:hover:bg-stone-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T7"></div></div>
-    <div id="CN" class="day-card day-gray"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">CN</h3><button onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 dark:hover:bg-gray-600 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-CN"></div></div>
+    <div id="T2" class="day-card day-pink"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T2</h3><button onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 dark:hover:bg-pink-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T2" class="task-container"></div></div>
+    <div id="T3" class="day-card day-purple"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T3</h3><button onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 dark:hover:bg-purple-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T3" class="task-container"></div></div>
+    <div id="T4" class="day-card day-blue"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T4</h3><button onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 dark:hover:bg-blue-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T4" class="task-container"></div></div>
+    <div id="T5" class="day-card day-green"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T5</h3><button onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 dark:hover:bg-green-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T5" class="task-container"></div></div>
+    <div id="T6" class="day-card day-yellow"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T6</h3><button onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T6" class="task-container"></div></div>
+    <div id="T7" class="day-card day-stone"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T7</h3><button onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 dark:hover:bg-stone-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T7" class="task-container"></div></div>
+    <div id="CN" class="day-card day-gray"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">CN</h3><button onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 dark:hover:bg-gray-600 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-CN" class="task-container"></div></div>
   </div>
 
   <!-- Month view -->
@@ -370,8 +406,9 @@
   let calendarVisible = false;
   let calendarInstance = null;
   let currentTheme = localStorage.getItem('theme') || 'light';
-  let tasksCache = new Map(); // Cache for better performance
+  let tasksCache = new Map();
   let isLoading = false;
+  let draggedOverContainer = null;
 
   const dayMap = { 'T2':0,'T3':1,'T4':2,'T5':3,'T6':4,'T7':5,'CN':6 };
   const dayIndexToKey = ['T2','T3','T4','T5','T6','T7','CN'];
@@ -383,7 +420,6 @@
     localStorage.setItem('theme', theme);
     updateThemeButton();
     
-    // Update calendar if visible
     if (calendarVisible && calendarInstance) {
       setTimeout(() => {
         calendarInstance.render();
@@ -458,85 +494,281 @@
     document.getElementById('current-week-display').textContent = `Tuần từ ${start.toLocaleDateString('vi-VN', opt)} đến ${end.toLocaleDateString('vi-VN', opt)}`;
   }
 
-  // Optimized task rendering with virtual scrolling concept
+  // Update task order in database
+  async function updateTaskOrder(taskId, newOrder, day) {
+    try {
+      const ref = doc(db, "artifacts", appId, "public", "data", "tasks", taskId);
+      await setDoc(ref, { 
+        order: newOrder,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch (err) {
+      console.error("Error updating task order:", err);
+    }
+  }
+
+  // Get next available order number for a day
+  function getNextOrder(tasksByDay, day) {
+    if (!tasksByDay[day] || tasksByDay[day].length === 0) return 1;
+    const maxOrder = Math.max(...tasksByDay[day].map(task => task.order || 0));
+    return maxOrder + 1;
+  }
+
+  // Reorder tasks after drag and drop within same day
+  async function reorderTasksInDay(day, taskElements) {
+    const tasks = Array.from(taskElements).map((el, index) => ({
+      id: el.dataset.taskId,
+      order: index + 1
+    }));
+
+    // Update all tasks in this day with new order
+    const batch = writeBatch(db);
+    tasks.forEach(task => {
+      const ref = doc(db, "artifacts", appId, "public", "data", "tasks", task.id);
+      batch.update(ref, { 
+        order: task.order,
+        updatedAt: new Date().toISOString()
+      });
+    });
+
+    try {
+      await batch.commit();
+    } catch (err) {
+      console.error("Error reordering tasks:", err);
+    }
+  }
+
+  // Optimized task rendering with sorting and drag functionality
   const renderTasks = throttle((tasksByDay) => {
     Object.keys(tasksByDay).forEach(day => {
       const container = document.getElementById(`tasks-${day}`);
       if (!container) return;
       
-      // Use document fragment for better performance
       const fragment = document.createDocumentFragment();
       
-      tasksByDay[day].sort((a,b) => (a.text||'').localeCompare(b.text||''));
+      // Sort by order first, then by text
+      tasksByDay[day].sort((a, b) => {
+        const orderA = a.order || 0;
+        const orderB = b.order || 0;
+        if (orderA === orderB) {
+          return (a.text || '').localeCompare(b.text || '');
+        }
+        return orderA - orderB;
+      });
       
-      tasksByDay[day].forEach(task => {
-        // Check cache to avoid recreating unchanged elements
-        const cacheKey = `${task.id}-${task.updatedAt}`;
+      tasksByDay[day].forEach((task, index) => {
+        const cacheKey = `${task.id}-${task.updatedAt}-${task.order}`;
         if (tasksCache.has(cacheKey)) {
-          fragment.appendChild(tasksCache.get(cacheKey).cloneNode(true));
+          const cachedEl = tasksCache.get(cacheKey).cloneNode(true);
+          setupTaskEventListeners(cachedEl, task, day);
+          fragment.appendChild(cachedEl);
           return;
         }
 
         const el = document.createElement('div');
         el.className = 'task-item p-2 mb-1 rounded transition-all hover:shadow-md';
-        el.style.backgroundColor = task.color || '#5B21B6';
+        el.style.backgroundColor = task.color || '#e85499';  // ← MÀU MẶC ĐỊNH MỚI
         el.textContent = task.text || '(không tên)';
         el.setAttribute('draggable', 'true');
         el.dataset.taskId = task.id;
         el.dataset.taskDay = task.day || '';
         el.dataset.taskDate = task.date || '';
-        
-        // Event listeners
-        el.addEventListener('click', (e) => { 
-          e.stopPropagation(); 
-          openEditTaskModal(task); 
-        });
-        
-        el.addEventListener('dragstart', (e) => {
-          draggedElement = e.target;
-          try { e.dataTransfer.setData('text/plain', task.id); } catch (ex) { }
-          e.dataTransfer.effectAllowed = 'move';
-          e.target.classList.add('dragging');
-        });
-        
-        el.addEventListener('dragend', (e) => {
-          draggedElement = null;
-          e.target.classList.remove('dragging');
-        });
+        el.dataset.taskOrder = task.order || index;
 
-        // Cache the element
+        // Add drag handle
+        const dragHandle = document.createElement('i');
+        dragHandle.className = 'fas fa-grip-lines drag-handle';
+        el.appendChild(dragHandle);
+
+        setupTaskEventListeners(el, task, day);
+        
         tasksCache.set(cacheKey, el);
         fragment.appendChild(el);
       });
       
-      // Update container in one operation
       container.innerHTML = '';
       container.appendChild(fragment);
     });
   }, 50);
 
-  // Setup day-card drop listeners (once)
+  // Setup event listeners for task elements
+  function setupTaskEventListeners(el, task, day) {
+    // Click to edit (avoid drag handle)
+    el.addEventListener('click', (e) => { 
+      if (e.target.classList.contains('drag-handle')) return;
+      e.stopPropagation(); 
+      openEditTaskModal(task); 
+    });
+    
+    // Drag start
+    el.addEventListener('dragstart', (e) => {
+      draggedElement = e.target;
+      try { 
+        e.dataTransfer.setData('text/plain', task.id); 
+      } catch (ex) { }
+      e.dataTransfer.effectAllowed = 'move';
+      e.target.classList.add('dragging');
+      
+      // Create placeholder
+const placeholder = el.cloneNode(true);
+      placeholder.classList.add('drag-placeholder');
+      placeholder.classList.remove('dragging');
+      placeholder.removeAttribute('draggable');
+      el.placeholder = placeholder;
+    });
+    
+    // Drag end
+    el.addEventListener('dragend', (e) => {
+      draggedElement = null;
+      e.target.classList.remove('dragging');
+      if (e.target.placeholder) {
+        e.target.placeholder.remove();
+        delete e.target.placeholder;
+      }
+      
+      // Remove all drag over effects
+      document.querySelectorAll('.drag-over-container').forEach(container => {
+        container.classList.remove('drag-over-container');
+      });
+    });
+
+    // Drag over for reordering within same container
+    el.addEventListener('dragover', (e) => {
+      if (draggedElement && draggedElement !== el && draggedElement.dataset.taskDay === el.dataset.taskDay) {
+        e.preventDefault();
+        const container = el.parentElement;
+        const afterElement = getDragAfterElement(container, e.clientY);
+        
+        if (afterElement == null) {
+          container.appendChild(draggedElement);
+        } else {
+          container.insertBefore(draggedElement, afterElement);
+        }
+      }
+    });
+  }
+
+  // Get element after which to insert dragged element
+  function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  // Setup day-card drop listeners
   function initDayCardDropHandlers() {
+    document.querySelectorAll('.task-container').forEach(container => {
+      const dayId = container.id.replace('tasks-', '');
+      
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (draggedElement && draggedElement.dataset.taskDay !== dayId) {
+          container.classList.add('drag-over-container');
+        }
+      });
+      
+      container.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if (draggedElement && draggedElement.dataset.taskDay !== dayId) {
+          container.classList.add('drag-over-container');
+          draggedOverContainer = container;
+        }
+      });
+      
+      container.addEventListener('dragleave', (e) => {
+        if (!container.contains(e.relatedTarget)) {
+          container.classList.remove('drag-over-container');
+        }
+      });
+      
+      container.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        container.classList.remove('drag-over-container');
+        
+        const taskId = e.dataTransfer.getData('text/plain') || (draggedElement && draggedElement.dataset.taskId);
+        if (!taskId) return;
+
+        const originalDay = draggedElement.dataset.taskDay;
+        const newDay = dayId;
+
+        // If moving to different day
+        if (originalDay !== newDay) {
+          const { start } = getWeekDateRange(currentDate);
+          const newDate = new Date(start);
+          newDate.setDate(start.getDate() + dayMap[newDay]);
+          
+          try {
+            setLoading(true);
+            const ref = doc(db, "artifacts", appId, "public", "data", "tasks", taskId);
+            await setDoc(ref, { 
+              day: newDay, 
+              date: formatDate(newDate), 
+              order: 1, // Reset order when moving to new day
+              updatedAt: new Date().toISOString() 
+            }, { merge: true });
+          } catch (err) {
+            console.error("Lỗi khi di chuyển task:", err);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          // Reordering within same day
+          const taskElements = container.querySelectorAll('.task-item');
+          await reorderTasksInDay(newDay, taskElements);
+        }
+      });
+    });
+
+    // Also setup drop for day cards themselves (backward compatibility)
     document.querySelectorAll('.day-card').forEach(card => {
       card.addEventListener('dragover', (e) => {
         e.preventDefault();
-        card.classList.add('drag-over');
+        if (!e.target.closest('.task-container')) {
+          card.classList.add('drag-over');
+        }
       });
-      card.addEventListener('dragenter', () => card.classList.add('drag-over'));
+      
+      card.addEventListener('dragenter', () => {
+        if (!card.querySelector('.task-container').contains(draggedElement)) {
+          card.classList.add('drag-over');
+        }
+      });
+      
       card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+      
       card.addEventListener('drop', async (e) => {
         e.preventDefault();
         card.classList.remove('drag-over');
+        
+        // Only handle if not dropped on task container
+        if (e.target.closest('.task-container')) return;
+        
         const taskId = e.dataTransfer.getData('text/plain') || (draggedElement && draggedElement.dataset.taskId);
         if (!taskId) return;
+        
         const newDay = card.id;
         const { start } = getWeekDateRange(currentDate);
         const newDate = new Date(start);
         newDate.setDate(start.getDate() + dayMap[newDay]);
+        
         try {
           setLoading(true);
           const ref = doc(db, "artifacts", appId, "public", "data", "tasks", taskId);
-          await setDoc(ref, { day: newDay, date: formatDate(newDate), updatedAt: new Date().toISOString() }, { merge: true });
+          await setDoc(ref, { 
+            day: newDay, 
+            date: formatDate(newDate), 
+            order: 1,
+            updatedAt: new Date().toISOString() 
+          }, { merge: true });
         } catch (err) {
           console.error("Lỗi khi di chuyển task:", err);
         } finally {
@@ -546,7 +778,7 @@
     });
   }
 
-  // Optimized realtime listener with better error handling
+  // Optimized realtime listener
   function setupWeekListener() {
     if (unsubscribeWeek) unsubscribeWeek();
     updateDateDisplay();
@@ -591,13 +823,13 @@
           title: task.text || '(không tên)',
           start: task.date,
           allDay: true,
-          backgroundColor: task.color || '#5B21B6',
-          borderColor: task.color || '#5B21B6',
-          extendedProps: { day: task.day, updatedAt: task.updatedAt }
+          backgroundColor: task.color || '#e85499',  // ← MÀU MẶC ĐỊNH MỚI
+          borderColor: task.color || '#e85499',      // ← MÀU MẶC ĐỊNH MỚI
+          extendedProps: { day: task.day, updatedAt: task.updatedAt, order: task.order }
         });
       });
     });
-// Initialize or update calendar
+
     if (!calendarInstance) {
       calendarInstance = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -621,10 +853,10 @@
             date: formatDate(new Date(ev.start)),
             day: ev.extendedProps?.day,
             color: ev.backgroundColor || ev.extendedProps?.color,
-            updatedAt: ev.extendedProps?.updatedAt
+            updatedAt: ev.extendedProps?.updatedAt,
+            order: ev.extendedProps?.order
           });
         },
-        // Performance optimizations
         eventDisplay: 'block',
         dayMaxEventRows: true,
         moreLinkClick: 'popover',
@@ -632,13 +864,12 @@
       });
       calendarInstance.render();
     } else {
-      // Update existing calendar efficiently
       calendarInstance.removeAllEvents();
       calendarInstance.addEventSource(events);
     }
   }
 
-  // Optimized delete all tasks with batch operations
+  // Delete all tasks with order reset
   async function deleteAllWeekTasks() {
     if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?\n\nHành động này KHÔNG THỂ HOÀN TÁC!")) return;
     
@@ -663,10 +894,7 @@
       });
 
       await batch.commit();
-      
-      // Clear cache
       tasksCache.clear();
-      
       alert(`Đã xóa thành công ${deleteCount} môn học!`);
       
     } catch (err) {
@@ -677,7 +905,7 @@
     }
   }
 
-  // Optimized copy last week with better error handling
+  // Copy last week with proper ordering
   async function copyLastWeekSchedule() {
     if (!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?")) return;
     
@@ -708,7 +936,8 @@
             ...t, 
             date: formatDate(newDate), 
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
+            order: t.order || 1  // Preserve order when copying
           };
           const newRef = doc(collection(db, "artifacts", appId, "public", "data", "tasks"));
           batch.set(newRef, newTask);
@@ -717,10 +946,7 @@
       });
       
       await batch.commit();
-      
-      // Clear cache to force refresh
       tasksCache.clear();
-      
       alert(`Đã sao chép ${copied} môn học từ tuần trước!`);
     } catch (err) {
       console.error("Lỗi khi commit batch:", err);
@@ -730,7 +956,7 @@
     }
   }
 
-  // Modal + CRUD with improved UX
+  // Modal + CRUD with order support
   window.openAddTaskModal = (dayOrDate) => {
     currentEditingTask = null;
     document.getElementById('modal-title').textContent = 'Thêm môn học';
@@ -753,11 +979,10 @@
       const { start } = getWeekDateRange(currentDate);
       document.getElementById('task-date').value = formatDate(start);
     }
-    document.getElementById('task-color').value = '#e85499';
+    document.getElementById('task-color').value = '#e85499';  // ← MÀU MẶC ĐỊNH MỚI
     document.getElementById('task-last-updated').textContent = '';
     document.getElementById('task-modal').classList.remove('hidden');
     
-    // Focus with slight delay for better UX
     setTimeout(() => {
       document.getElementById('task-text').focus();
     }, 100);
@@ -768,7 +993,7 @@
     document.getElementById('modal-title').textContent = 'Sửa môn học';
     document.getElementById('task-text').value = task.text || '';
     document.getElementById('task-day').value = task.day || 'T2';
-    document.getElementById('task-color').value = task.color || '#5B21B6';
+    document.getElementById('task-color').value = task.color || '#e85499';  // ← MÀU MẶC ĐỊNH MỚI
     document.getElementById('task-date').value = task.date || '';
     document.getElementById('task-last-updated').textContent = task.updatedAt ? 
       `Sửa lần cuối: ${new Date(task.updatedAt).toLocaleString('vi-VN')}` : '';
@@ -795,7 +1020,7 @@
     }
     
     const day = document.getElementById('task-day').value;
-    const color = document.getElementById('task-color').value || '#5B21B6';
+    const color = document.getElementById('task-color').value || '#e85499';  // ← MÀU MẶC ĐỊNH MỚI
     const dateVal = document.getElementById('task-date').value;
     
     let finalDate;
@@ -813,8 +1038,27 @@
       day, 
       color, 
       date: finalDate, 
-      updatedAt: new Date().toISOString() 
+      updatedAt: new Date().toISOString()
     };
+
+    // Set order for new tasks
+    if (!currentEditingTask || !currentEditingTask.id) {
+      // For new tasks, get next order number
+      const { start, end } = getWeekDateRange(currentDate);
+      const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)), where("day", "==", day));
+      
+      try {
+        const snapshot = await getDocs(q);
+        const existingTasks = [];
+        snapshot.forEach(doc => existingTasks.push(doc.data()));
+        payload.order = getNextOrder({ [day]: existingTasks }, day);
+      } catch (err) {
+        payload.order = 1; // Fallback
+      }
+    } else {
+      // Keep existing order for edited tasks
+      payload.order = currentEditingTask.order || 1;
+    }
     
     setLoading(true);
     
@@ -827,7 +1071,6 @@
         await setDoc(doc(collection(db, "artifacts", appId, "public", "data", "tasks")), payload);
       }
       
-      // Clear relevant cache entries
       const cacheKeysToDelete = Array.from(tasksCache.keys()).filter(key => 
         key.startsWith(currentEditingTask?.id || 'new')
       );
@@ -851,7 +1094,6 @@
     try {
       await deleteDoc(doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id));
       
-      // Clear cache for deleted task
       const cacheKeysToDelete = Array.from(tasksCache.keys()).filter(key => 
         key.startsWith(currentEditingTask.id)
       );
@@ -866,7 +1108,7 @@
     }
   };
 
-  // Optimized navigation with debouncing
+  // Navigation with debouncing
   const debouncedWeekNavigation = debounce((direction) => {
     currentDate.setDate(currentDate.getDate() + (direction * 7));
     setupWeekListener();
@@ -889,7 +1131,7 @@
     closeSidebar();
   });
 
-  // Sidebar show/hide with improved performance
+  // Sidebar management
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
   const sidebarClose = document.getElementById('sidebar-close');
@@ -915,7 +1157,6 @@
   
   sidebarClose.addEventListener('click', closeSidebar);
 
-  // Optimized outside click detection
   const handleOutsideClick = throttle((e) => {
     const isInsideSidebar = sidebar.contains(e.target);
     const isMenuButton = menuToggle.contains(e.target);
@@ -928,7 +1169,7 @@
 
   document.addEventListener('click', handleOutsideClick);
 
-  // Copy week actions
+  // Copy and delete actions
   document.getElementById('copy-last-week-btn').addEventListener('click', async (e) => { 
     e.stopPropagation();
     await copyLastWeekSchedule(); 
@@ -940,14 +1181,13 @@
     await copyLastWeekSchedule(); 
   });
 
-  // Delete all week tasks
   document.getElementById('delete-all-week-btn').addEventListener('click', async (e) => {
     e.stopPropagation();
     await deleteAllWeekTasks();
     closeSidebar();
   });
 
-  // Toggle week/month view
+  // Toggle view
   document.getElementById('toggle-view-btn').addEventListener('click', (e) => {
     e.stopPropagation();
     calendarVisible = !calendarVisible;
@@ -959,7 +1199,6 @@
       weekView.classList.add('hidden');
       monthView.classList.remove('hidden');
       
-      // Lazy load calendar view
       if (calendarInstance) {
         setTimeout(() => {
           calendarInstance.render();
@@ -974,16 +1213,14 @@
     closeSidebar();
   });
 
-  // Close modal on backdrop click or ESC
+  // Modal backdrop and keyboard shortcuts
   document.getElementById('task-modal').addEventListener('click', (e) => { 
     if (e.target === document.getElementById('task-modal')) {
       closeModal(); 
     }
   });
 
-  // Optimized keyboard shortcuts
   const handleKeyDown = throttle((e) => {
-    // ESC key
     if (e.key === 'Escape') {
       if (!document.getElementById('task-modal').classList.contains('hidden')) {
         closeModal();
@@ -992,7 +1229,6 @@
       }
     }
     
-    // Enter key in modal
     if (e.key === 'Enter' && !document.getElementById('task-modal').classList.contains('hidden')) {
       e.preventDefault();
       if (!isLoading) {
@@ -1000,7 +1236,6 @@
       }
     }
     
-    // Arrow keys for week navigation (when not in modal)
     if (document.getElementById('task-modal').classList.contains('hidden') && !isLoading) {
       if (e.key === 'ArrowLeft' && e.ctrlKey) {
         e.preventDefault();
@@ -1011,7 +1246,6 @@
       }
     }
     
-    // Theme toggle shortcut
     if (e.key === 't' && e.ctrlKey && e.shiftKey) {
       e.preventDefault();
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -1021,21 +1255,18 @@
 
   document.addEventListener('keydown', handleKeyDown);
 
-  // Prevent sidebar from closing when clicking inside it
   sidebar.addEventListener('click', (e) => {
     e.stopPropagation();
   });
 
-  // Service worker registration for better caching (optional)
+  // Service worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
-        // Service worker registration failed, but app still works
-      });
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     });
   }
 
-  // Initialize everything with error handling
+  // Initialize
   function init() {
     try {
       updateTheme(currentTheme);
@@ -1043,17 +1274,15 @@
       initDayCardDropHandlers();
       setupWeekListener();
       
-      // Preload next week data for better UX
       setTimeout(() => {
         const nextWeek = new Date(currentDate);
         nextWeek.setDate(currentDate.getDate() + 7);
         const { start, end } = getWeekDateRange(nextWeek);
         const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
         getDocs(q).then(snapshot => {
-          // Preload into cache
           snapshot.forEach(docSnap => {
             const d = docSnap.data();
-            tasksCache.set(`${docSnap.id}-${d.updatedAt}`, null);
+            tasksCache.set(`${docSnap.id}-${d.updatedAt}-${d.order}`, null);
           });
         }).catch(err => console.log('Preload failed:', err));
       }, 2000);
@@ -1065,7 +1294,6 @@
     }
   }
 
-  // Performance monitoring
   if (performance.mark) {
     performance.mark('app-init-start');
     init();
@@ -1075,7 +1303,6 @@
     init();
   }
 
-  // Cleanup on page unload
   window.addEventListener('beforeunload', () => {
     if (unsubscribeWeek) {
       unsubscribeWeek();
@@ -1086,4 +1313,4 @@
 </script>
 
 </body>
-</html>    
+</html>
