@@ -4,12 +4,12 @@ import { getFirestore, collection, query, where, getDocs, writeBatch, doc } from
 
 // 1. Lấy thông tin cấu hình Firebase từ GitHub Secrets (được truyền vào qua biến môi trường)
 const firebaseConfig = {
-  apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs",
-  authDomain: "lichhoc-13811.firebaseapp.com",
-  projectId: "lichhoc-13811",
-  storageBucket: "lichhoc-13811.firebasestorage.app",
-  messagingSenderId: "495829238108",
-  appId: "1:495829238108:web:970c3799dd94d662edc199"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
 };
 
 // Kiểm tra xem các biến môi trường đã được cung cấp chưa
