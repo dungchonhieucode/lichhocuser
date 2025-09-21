@@ -2,28 +2,27 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, query, where, getDocs, writeBatch, doc } from "firebase/firestore";
 
-// =================================================================
-// == DÁN TRỰC TIẾP firebaseConfig CỦA BẠN VÀO ĐÂY ==
-// =================================================================
+// Cấu hình Firebase được nhúng trực tiếp vào script.
+// Các thông tin này đã chính xác với dự án của bạn.
 const firebaseConfig = {
-  apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs", // <-- THAY BẰNG API KEY CỦA BẠN
-  authDomain: "lichhoc-13811.firebaseapp.com",        // <-- THAY BẰNG AUTH DOMAIN CỦA BẠN
-  projectId: "lichhoc-13811",                         // <-- THAY BẰNG PROJECT ID CỦA BẠN
-  storageBucket: "lichhoc-13811.firebasestorage.app", // <-- THAY BẰNG STORAGE BUCKET CỦA BẠN
-  messagingSenderId: "495829238108",                  // <-- THAY BẰNG SENDER ID CỦA BẠN
-  appId: "1:495829238108:web:970c3799dd94d662edc199"   // <-- THAY BẰNG APP ID CỦA BẠN
+  apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs",
+  authDomain: "lichhoc-13811.firebaseapp.com",
+  projectId: "lichhoc-13811",
+  storageBucket: "lichhoc-13811.firebasestorage.app",
+  messagingSenderId: "495829238108",
+  appId: "1:495829238108:web:970c3799dd94d662edc199"
 };
-// =================================================================
 
-// Khởi tạo Firebase với config đã cung cấp
+// Khởi tạo ứng dụng Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const appId = firebaseConfig.projectId;
 const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
 
+// Ánh xạ thứ trong tuần ra số để tính toán
 const dayMap = { 'T2': 0, 'T3': 1, 'T4': 2, 'T5': 3, 'T6': 4, 'T7': 5, 'CN': 6 };
 
-// Hàm tiện ích để định dạng ngày YYYY-MM-DD
+// Hàm tiện ích: Định dạng ngày thành chuỗi 'YYYY-MM-DD'
 function formatDate(date) {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -31,11 +30,11 @@ function formatDate(date) {
     return `${y}-${m}-${d}`;
 }
 
-// Hàm tiện ích để lấy khoảng ngày của một tuần (T2-CN)
+// Hàm tiện ích: Lấy ngày bắt đầu (Thứ 2) và kết thúc (Chủ Nhật) của một tuần
 function getWeekDateRange(date) {
     const start = new Date(date);
     const dayOfWeek = start.getDay();
-    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Tính toán để Thứ 2 luôn là ngày đầu tuần
     start.setDate(date.getDate() - diff);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
@@ -48,15 +47,16 @@ function getWeekDateRange(date) {
 async function copyLastWeekSchedule() {
     console.log("Bắt đầu tiến trình sao chép lịch tuần...");
 
-    const today = new Date(); // Ngày chạy script (Chủ Nhật)
+    const today = new Date(); // Ngày chạy script (là Chủ Nhật)
     const nextWeekDate = new Date(today);
-    nextWeekDate.setDate(today.getDate() + 1); // Ngày bắt đầu của tuần mới (Thứ Hai)
+    nextWeekDate.setDate(today.getDate() + 1); // Ngày của tuần mới (là Thứ Hai)
 
-    const { start: lastStart, end: lastEnd } = getWeekDateRange(today); // Tuần hiện tại
-    const { start: nextWeekStart } = getWeekDateRange(nextWeekDate); // Tuần tới
+    const { start: lastStart, end: lastEnd } = getWeekDateRange(today); // Tuần hiện tại (sắp kết thúc)
+    const { start: nextWeekStart } = getWeekDateRange(nextWeekDate); // Tuần tới (sắp bắt đầu)
 
     console.log(`Đang tìm kiếm lịch trong khoảng: ${formatDate(lastStart)} đến ${formatDate(lastEnd)}`);
-    
+
+    // Tạo câu truy vấn để lấy tất cả các môn học trong tuần hiện tại
     const q = query(tasksCollectionRef, where("date", ">=", formatDate(lastStart)), where("date", "<=", formatDate(lastEnd)));
 
     try {
@@ -68,29 +68,38 @@ async function copyLastWeekSchedule() {
 
         console.log(`Tìm thấy ${snap.size} môn học. Chuẩn bị sao chép sang tuần bắt đầu từ ${formatDate(nextWeekStart)}.`);
 
+        // Sử dụng batch để thực hiện nhiều thao tác ghi cùng lúc cho hiệu quả
         const batch = writeBatch(db);
+
         snap.forEach(docSnap => {
             const t = docSnap.data();
             const offset = dayMap[t.day];
             if (offset !== undefined) {
+                // Tính toán ngày mới cho môn học trong tuần tới
                 const newDate = new Date(nextWeekStart);
                 newDate.setDate(nextWeekStart.getDate() + offset);
+
+                // Tạo object dữ liệu cho môn học mới
                 const newTask = {
-                    ...t,
-                    date: formatDate(newDate),
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
+                    ...t, // Giữ lại toàn bộ dữ liệu cũ (tên, màu sắc,...)
+                    date: formatDate(newDate), // Cập nhật lại ngày tháng
+                    createdAt: new Date().toISOString(), // Đặt thời gian tạo mới
+                    updatedAt: new Date().toISOString(), // Đặt thời gian cập nhật mới
                 };
+
+                // Tạo một tham chiếu đến một document MỚI (với ID tự động)
                 const newRef = doc(collection(db, "artifacts", appId, "public", "data", "tasks"));
+                // Thêm thao tác ghi vào batch
                 batch.set(newRef, newTask);
             }
         });
 
+        // Gửi toàn bộ batch lên Firestore để thực thi
         await batch.commit();
         console.log(`ĐÃ SAO CHÉP THÀNH CÔNG ${snap.size} môn học từ tuần trước sang tuần mới!`);
     } catch (err) {
         console.error("LỖI khi sao chép lịch:", err);
-        process.exit(1);
+        process.exit(1); // Báo lỗi để GitHub Action dừng lại với trạng thái thất bại
     }
 }
 
