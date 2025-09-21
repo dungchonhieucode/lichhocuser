@@ -252,6 +252,11 @@
   <header class="flex justify-between items-center py-2 px-4">
     <h1 class="text-xl sm:text-2xl font-bold text-primary">Lịch học</h1>
     <div class="flex items-center gap-3">
+       <!-- THAY ĐỔI MỚI: Thêm khu vực hiển thị trạng thái đăng nhập -->
+      <div id="auth-container" class="flex items-center gap-2">
+        <span id="user-display" class="text-sm text-secondary hidden"></span>
+        <button id="auth-btn" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors">Đăng nhập</button>
+      </div>
       <div id="sync-indicator" class="flex items-center gap-2">
         <span id="sync-dot" class="inline-block w-3 h-3 rounded-full bg-gray-400"></span>
         <div id="loading-spinner" class="spinner hidden"></div>
@@ -357,18 +362,29 @@
   // Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  // THAY ĐỔI MỚI: Import thêm các hàm Authentication
+  import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+
+  // THAY ĐỔI MỚI: Định nghĩa email của admin
+  const ADMIN_EMAIL = "dungchonhieu87@gmail.com"; // <-- THAY EMAIL CỦA BẠN VÀO ĐÂY
 
   // Firebase config
   const firebaseConfig = {
-    apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs",
-    authDomain: "lichhoc-13811.firebaseapp.com",
-    projectId: "lichhoc-13811",
-    storageBucket: "lichhoc-13811.firebasestorage.app",
-    messagingSenderId: "495829238108",
-    appId: "1:495829238108:web:970c3799dd94d662edc199"
+    apiKey: "AIzaSyDUQpOlvgn1TwT8TkfdHyesl1bc3Qbn0pM",
+    authDomain: "dulieulichhoc.firebaseapp.com",
+    projectId: "dulieulichhoc",
+    storageBucket: "dulieulichhoc.firebasestorage.app",
+    messagingSenderId: "46236518897",
+    appId: "1:46236518897:web:8a6692006e802902965c50"
   };
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  // THAY ĐỔI MỚI: Khởi tạo Authentication
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
   const appId = firebaseConfig.projectId;
   const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
 
@@ -401,15 +417,17 @@
   // State
   let currentEditingTask = null;
   let currentDate = new Date();
-  let unsubscribeWeek = null;
   let draggedElement = null;
   let calendarVisible = false;
   let calendarInstance = null;
   let currentTheme = localStorage.getItem('theme') || 'light';
   let tasksCache = new Map();
   let isLoading = false;
-  // IMPROVEMENT: Add a variable to track the current week request to prevent race conditions
   let currentWeekId = null;
+  let unsubscribeWeek = null;
+  let unsubscribeMonth = null;
+  // THAY ĐỔI MỚI: Thêm state để lưu thông tin người dùng hiện tại
+  let currentUser = null;
 
   const dayMap = { 'T2':0,'T3':1,'T4':2,'T5':3,'T6':4,'T7':5,'CN':6 };
   const dayIndexToKey = ['T2','T3','T4','T5','T6','T7','CN'];
@@ -495,14 +513,6 @@
     document.getElementById('current-week-display').textContent = `Tuần từ ${start.toLocaleDateString('vi-VN', opt)} đến ${end.toLocaleDateString('vi-VN', opt)}`;
   }
 
-  // Get next available order number for a day
-  function getNextOrder(tasksByDay, day) {
-    if (!tasksByDay[day] || tasksByDay[day].length === 0) return 1;
-    const maxOrder = Math.max(...tasksByDay[day].map(task => task.order || 0));
-    return maxOrder + 1;
-  }
-
-  // Reorder tasks after drag and drop within same day
   async function reorderTasksInDay(day, taskElements) {
     const tasks = Array.from(taskElements).map((el, index) => ({
       id: el.dataset.taskId,
@@ -525,7 +535,6 @@
     }
   }
 
-  // Optimized task rendering with sorting and drag functionality
   const renderTasks = throttle((tasksByDay) => {
     Object.keys(tasksByDay).forEach(day => {
       const container = document.getElementById(`tasks-${day}`);
@@ -554,7 +563,6 @@
           tasksCache.set(cacheKey, el);
         }
         
-        // Always update dataset attributes as they might change
         el.dataset.taskId = task.id;
         el.dataset.taskDay = task.day || '';
         el.dataset.taskDate = task.date || '';
@@ -569,7 +577,6 @@
     });
   }, 50);
 
-  // Setup event listeners for task elements
   function setupTaskEventListeners(el, task, day) {
     el.addEventListener('click', (e) => { 
       if (e.target.classList.contains('drag-handle')) return;
@@ -618,40 +625,35 @@
     }, { offset: Number.NEGATIVE_INFINITY }).element;
   }
 
-  // Setup day-card drop listeners
   function initDayCardDropHandlers() {
-    document.querySelectorAll('.task-container, .day-card').forEach(element => {
+    document.querySelectorAll('.day-card').forEach(element => {
       element.addEventListener('dragover', e => e.preventDefault());
       
       element.addEventListener('dragenter', e => {
         e.preventDefault();
-        const targetContainer = element.classList.contains('task-container') ? element : element.querySelector('.task-container');
+        const targetContainer = element.querySelector('.task-container');
         if (draggedElement && targetContainer && draggedElement.parentElement !== targetContainer) {
-          targetContainer.classList.add('drag-over-container');
+          element.classList.add('drag-over');
         }
       });
       
       element.addEventListener('dragleave', e => {
-        const targetContainer = element.classList.contains('task-container') ? element : element.querySelector('.task-container');
-        if (targetContainer && !targetContainer.contains(e.relatedTarget)) {
-          targetContainer.classList.remove('drag-over-container');
-        }
+        element.classList.remove('drag-over');
       });
       
       element.addEventListener('drop', e => {
         e.preventDefault();
         if (!draggedElement) return;
 
+        element.classList.remove('drag-over');
         const targetCard = element.closest('.day-card');
         const targetContainer = targetCard.querySelector('.task-container');
-        targetContainer.classList.remove('drag-over-container');
         
         const taskId = draggedElement.dataset.taskId;
         const originalDay = draggedElement.dataset.taskDay;
         const newDay = targetCard.id;
 
         if (originalDay !== newDay) {
-          // IMPROVEMENT: Optimistic UI update. Move element immediately.
           const afterElement = getDragAfterElement(targetContainer, e.clientY);
           if (afterElement) {
             targetContainer.insertBefore(draggedElement, afterElement);
@@ -671,45 +673,34 @@
             updatedAt: new Date().toISOString() 
           }, { merge: true }).catch(err => {
             console.error("Lỗi khi di chuyển task:", err);
-            // Revert UI on failure if needed
             setupWeekListener(); 
           });
 
-          // Reorder both original and new lists
           const originalContainer = document.getElementById(`tasks-${originalDay}`);
           if (originalContainer) reorderTasksInDay(originalDay, originalContainer.querySelectorAll('.task-item'));
           reorderTasksInDay(newDay, targetContainer.querySelectorAll('.task-item'));
 
         } else {
-          // Reordering within same day
           reorderTasksInDay(newDay, targetContainer.querySelectorAll('.task-item'));
         }
       });
     });
   }
   
-  // Optimized realtime listener
   function setupWeekListener() {
     if (unsubscribeWeek) unsubscribeWeek();
-    
-    // IMPROVEMENT: Clear cache when navigating to a new week
     tasksCache.clear();
-    
     updateDateDisplay();
     setLoading(true);
     
     const { start, end } = getWeekDateRange(currentDate);
-    // IMPROVEMENT: Generate a unique ID for this week's request
     const weekId = formatDate(start);
     currentWeekId = weekId;
 
     const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
     
     unsubscribeWeek = onSnapshot(q, (snapshot) => {
-      // IMPROVEMENT: Check if the received data is for the currently viewed week
-      if (currentWeekId !== weekId) {
-        return; // Ignore data from a previous request
-      }
+      if (currentWeekId !== weekId) return;
       
       document.getElementById('sync-dot').style.backgroundColor = 'green';
       const tasksByDay = { T2:[], T3:[], T4:[], T5:[], T6:[], T7:[], CN:[] };
@@ -720,67 +711,90 @@
       });
       
       renderTasks(tasksByDay);
-      
-      if (calendarVisible) {
-        renderMonth(tasksByDay);
-      }
-      
       setLoading(false);
     }, (err) => {
-      console.error("Listener error:", err);
+      console.error("Week listener error:", err);
       document.getElementById('sync-dot').style.backgroundColor = 'red';
-      setLoading(false); // Ensure loading is stopped on error
+      setLoading(false);
     });
   }
 
-  // Render month (FullCalendar) from tasksByDay
-  function renderMonth(tasksByDay) {
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) return;
-    
-    const events = Object.values(tasksByDay).flat().map(task => ({
-      id: task.id,
-      title: task.text || '(không tên)',
-      start: task.date,
-      allDay: true,
-      backgroundColor: task.color || '#e85499',
-      borderColor: task.color || '#e85499',
-      extendedProps: { day: task.day, updatedAt: task.updatedAt, order: task.order }
-    }));
+  function fetchAndRenderMonthEvents(viewInfo) {
+    if (unsubscribeMonth) unsubscribeMonth();
+    setLoading(true);
 
-    if (!calendarInstance) {
-      calendarInstance = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'vi',
-        height: 'auto',
-        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
-        events,
-        dateClick: (info) => {
-          openAddTaskModal(info.date);
-          document.getElementById('task-date').value = formatDate(info.date);
-        },
-        eventClick: (info) => {
-          const ev = info.event;
-          openEditTaskModal({
-            id: ev.id,
-            text: ev.title,
-            date: formatDate(new Date(ev.start)),
-            day: ev.extendedProps?.day,
-            color: ev.backgroundColor,
-            updatedAt: ev.extendedProps?.updatedAt,
-            order: ev.extendedProps?.order
-          });
-        },
-        dayMaxEventRows: true,
-      });
-      calendarInstance.render();
-    } else {
-      calendarInstance.removeAllEvents();
-      calendarInstance.addEventSource(events);
-    }
+    const start = formatDate(viewInfo.start);
+    const end = formatDate(viewInfo.end);
+
+    const q = query(tasksCollectionRef, where("date", ">=", start), where("date", "<=", end));
+
+    unsubscribeMonth = onSnapshot(q, (snapshot) => {
+        const events = snapshot.docs.map(docSnap => {
+            const task = { id: docSnap.id, ...docSnap.data() };
+            return {
+                id: task.id,
+                title: task.text || '(không tên)',
+                start: task.date,
+                allDay: true,
+                backgroundColor: task.color || '#e85499',
+                borderColor: task.color || '#e85499',
+                extendedProps: { day: task.day, updatedAt: task.updatedAt, order: task.order }
+            };
+        });
+
+        if (calendarInstance) {
+            calendarInstance.removeAllEvents();
+            calendarInstance.addEventSource(events);
+        }
+        setLoading(false);
+        document.getElementById('sync-dot').style.backgroundColor = 'green';
+    }, (err) => {
+        console.error("Month listener error:", err);
+        setLoading(false);
+        document.getElementById('sync-dot').style.backgroundColor = 'red';
+    });
+  }
+
+  function initializeCalendar() {
+    if (calendarInstance) return;
+
+    const calendarEl = document.getElementById('calendar');
+    calendarInstance = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'vi',
+      height: 'auto',
+      headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
+      
+      datesSet: (viewInfo) => {
+          fetchAndRenderMonthEvents(viewInfo.view);
+      },
+      
+      dateClick: (info) => {
+        openAddTaskModal(info.date);
+      },
+      eventClick: (info) => {
+        const ev = info.event;
+        openEditTaskModal({
+          id: ev.id,
+          text: ev.title,
+          date: formatDate(new Date(ev.start)),
+          day: ev.extendedProps?.day,
+          color: ev.backgroundColor,
+          updatedAt: ev.extendedProps?.updatedAt,
+          order: ev.extendedProps?.order
+        });
+      },
+      dayMaxEventRows: true,
+    });
+    calendarInstance.render();
   }
 
   async function deleteAllWeekTasks() {
+    // THAY ĐỔI MỚI: Kiểm tra quyền admin trước khi xóa
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+        alert("Bạn không có quyền thực hiện hành động này.");
+        return;
+    }
     if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?\n\nHành động này KHÔNG THỂ HOÀN TÁC!")) return;
     
     setLoading(true);
@@ -852,11 +866,11 @@
     }
   }
 
-  // Modal + CRUD
   window.openAddTaskModal = (dayOrDate) => {
     currentEditingTask = null;
     document.getElementById('modal-title').textContent = 'Thêm môn học';
-    document.getElementById('task-text').value = '';
+    const taskText = document.getElementById('task-text');
+    taskText.value = '';
     document.getElementById('delete-task-btn').classList.add('hidden');
     document.getElementById('task-color').value = '#e85499';
     document.getElementById('task-last-updated').textContent = '';
@@ -875,23 +889,32 @@
     }
     
     document.getElementById('task-modal').classList.remove('hidden');
-    setTimeout(() => document.getElementById('task-text').focus(), 100);
+    setTimeout(() => taskText.focus(), 100);
   };
 
   window.openEditTaskModal = (task) => {
     currentEditingTask = task;
     document.getElementById('modal-title').textContent = 'Sửa môn học';
-    document.getElementById('task-text').value = task.text || '';
+    const taskText = document.getElementById('task-text');
+    taskText.value = task.text || '';
     document.getElementById('task-day').value = task.day || 'T2';
     document.getElementById('task-color').value = task.color || '#e85499';
     document.getElementById('task-date').value = task.date || '';
     document.getElementById('task-last-updated').textContent = task.updatedAt ? 
       `Sửa lần cuối: ${new Date(task.updatedAt).toLocaleString('vi-VN')}` : '';
-    document.getElementById('delete-task-btn').classList.remove('hidden');
+    
+    // THAY ĐỔI MỚI: Chỉ hiển thị nút xóa nếu là admin
+    const deleteBtn = document.getElementById('delete-task-btn');
+    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+        deleteBtn.classList.remove('hidden');
+    } else {
+        deleteBtn.classList.add('hidden');
+    }
+    
     document.getElementById('task-modal').classList.remove('hidden');
     setTimeout(() => {
-      document.getElementById('task-text').focus();
-      document.getElementById('task-text').select();
+      taskText.focus();
+      taskText.select();
     }, 100);
   };
 
@@ -943,6 +966,11 @@
   };
 
   window.deleteTask = async () => {
+    // THAY ĐỔI MỚI: Kiểm tra quyền admin một lần nữa trước khi xóa
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+        alert("Bạn không có quyền thực hiện hành động này.");
+        return;
+    }
     if (!currentEditingTask || !currentEditingTask.id || !confirm('Bạn có chắc muốn xóa môn học này không?')) return;
     
     setLoading(true);
@@ -961,6 +989,64 @@
     currentDate.setDate(currentDate.getDate() + (direction * 7));
     setupWeekListener();
   }, 100);
+
+  // --- THAY ĐỔI MỚI: Thêm các hàm xử lý đăng nhập/đăng xuất ---
+  
+  // Hàm đăng nhập bằng Google
+  const signIn = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Lỗi khi đăng nhập:", error);
+    }
+  };
+
+  // Hàm đăng xuất
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+    }
+  };
+
+  // Hàm cập nhật giao diện dựa trên trạng thái đăng nhập
+  const updateAuthUI = (user) => {
+    const authBtn = document.getElementById('auth-btn');
+    const userDisplay = document.getElementById('user-display');
+    const deleteAllBtn = document.getElementById('delete-all-week-btn');
+
+    if (user) {
+      // Nếu đã đăng nhập
+      userDisplay.textContent = user.displayName || user.email;
+      userDisplay.classList.remove('hidden');
+      authBtn.textContent = 'Đăng xuất';
+      authBtn.onclick = logOut;
+
+      // Hiển thị nút "Xóa tất cả" nếu là admin
+      if (user.email === ADMIN_EMAIL) {
+        deleteAllBtn.style.display = 'flex';
+      } else {
+        deleteAllBtn.style.display = 'none';
+      }
+
+    } else {
+      // Nếu chưa đăng nhập
+      userDisplay.textContent = '';
+      userDisplay.classList.add('hidden');
+      authBtn.textContent = 'Đăng nhập';
+      authBtn.onclick = signIn;
+      deleteAllBtn.style.display = 'none'; // Ẩn nút "Xóa tất cả"
+    }
+  }
+  
+  // Lắng nghe sự thay đổi trạng thái đăng nhập
+  onAuthStateChanged(auth, user => {
+      currentUser = user;
+      updateAuthUI(user);
+  });
+  
+  // --- KẾT THÚC THAY ĐỔI MỚI ---
 
   // UI interactions
   document.getElementById('prev-week-btn').addEventListener('click', () => debouncedWeekNavigation(-1));
@@ -995,12 +1081,33 @@
   document.getElementById('delete-all-week-btn').addEventListener('click', async (e) => {
     e.stopPropagation(); await deleteAllWeekTasks(); closeSidebar();
   });
+  
   document.getElementById('toggle-view-btn').addEventListener('click', (e) => {
     e.stopPropagation();
     calendarVisible = !calendarVisible;
-    document.getElementById('week-view').classList.toggle('hidden', calendarVisible);
-    document.getElementById('month-view').classList.toggle('hidden', !calendarVisible);
-    if (calendarVisible && calendarInstance) setTimeout(() => calendarInstance.render(), 100);
+    
+    const weekView = document.getElementById('week-view');
+    const monthView = document.getElementById('month-view');
+    const weekNav = document.querySelector('.flex.items-center.p-2.gap-2');
+
+    weekView.classList.toggle('hidden', calendarVisible);
+    monthView.classList.toggle('hidden', !calendarVisible);
+    weekNav.classList.toggle('hidden', calendarVisible);
+
+    if (calendarVisible) {
+      if (unsubscribeWeek) {
+        unsubscribeWeek();
+        unsubscribeWeek = null;
+      }
+      initializeCalendar();
+    } else {
+      if (unsubscribeMonth) {
+        unsubscribeMonth();
+        unsubscribeMonth = null;
+      }
+      setupWeekListener();
+    }
+    
     updateViewButton();
     closeSidebar();
   });
@@ -1019,23 +1126,18 @@
     if (e.key === 'Enter' && !modalHidden && !isLoading) {
       e.preventDefault(); window.saveTask();
     }
-    if (modalHidden && !isLoading && e.ctrlKey) {
+    if (modalHidden && !calendarVisible && !isLoading && e.ctrlKey) {
       if (e.key === 'ArrowLeft') { e.preventDefault(); debouncedWeekNavigation(-1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); debouncedWeekNavigation(1); }
     }
   }, 100));
   
-  // Initialize
   function init() {
     try {
       updateTheme(currentTheme);
       updateViewButton();
       initDayCardDropHandlers();
       setupWeekListener();
-      
-      // FIX: Removed the faulty pre-loading logic that caused the TypeError.
-      // Firestore's initial connection warmup will happen on the first query naturally.
-
       console.log('App initialized successfully');
     } catch (error) {
       console.error('Initialization error:', error);
