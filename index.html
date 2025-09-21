@@ -252,7 +252,6 @@
   <header class="flex justify-between items-center py-2 px-4">
     <h1 class="text-xl sm:text-2xl font-bold text-primary">Lịch học</h1>
     <div class="flex items-center gap-3">
-       <!-- THAY ĐỔI MỚI: Thêm khu vực hiển thị trạng thái đăng nhập -->
       <div id="auth-container" class="flex items-center gap-2">
         <span id="user-display" class="text-sm text-secondary hidden"></span>
         <button id="auth-btn" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors">Đăng nhập</button>
@@ -272,14 +271,12 @@
     <button id="prev-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all">
       <i class="fas fa-arrow-left"></i>
     </button>
-
     <div class="text-center flex-1 px-2">
       <h2 id="current-week-display" class="text-sm font-semibold text-primary"></h2>
       <div class="text-xs text-blue-500 mt-1 hidden sm:block">
         <button id="copy-last-week-btn-inline" class="underline hover:text-blue-700 transition-colors">Sao chép lịch từ tuần trước</button>
       </div>
     </div>
-
     <button id="next-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all">
       <i class="fas fa-arrow-right"></i>
     </button>
@@ -287,13 +284,13 @@
 
   <!-- Week view -->
   <div id="week-view" class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-4">
-    <div id="T2" class="day-card day-pink"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T2</h3><button onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 dark:hover:bg-pink-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T2" class="task-container"></div></div>
-    <div id="T3" class="day-card day-purple"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T3</h3><button onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 dark:hover:bg-purple-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T3" class="task-container"></div></div>
-    <div id="T4" class="day-card day-blue"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T4</h3><button onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 dark:hover:bg-blue-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T4" class="task-container"></div></div>
-    <div id="T5" class="day-card day-green"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T5</h3><button onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 dark:hover:bg-green-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T5" class="task-container"></div></div>
-    <div id="T6" class="day-card day-yellow"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T6</h3><button onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T6" class="task-container"></div></div>
-    <div id="T7" class="day-card day-stone"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T7</h3><button onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 dark:hover:bg-stone-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T7" class="task-container"></div></div>
-    <div id="CN" class="day-card day-gray"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">CN</h3><button onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 dark:hover:bg-gray-600 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-CN" class="task-container"></div></div>
+    <div id="T2" class="day-card day-pink"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T2</h3><button data-permission="create" onclick="openAddTaskModal('T2')" class="text-xl hover:bg-pink-200 dark:hover:bg-pink-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T2" class="task-container"></div></div>
+    <div id="T3" class="day-card day-purple"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T3</h3><button data-permission="create" onclick="openAddTaskModal('T3')" class="text-xl hover:bg-purple-200 dark:hover:bg-purple-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T3" class="task-container"></div></div>
+    <div id="T4" class="day-card day-blue"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T4</h3><button data-permission="create" onclick="openAddTaskModal('T4')" class="text-xl hover:bg-blue-200 dark:hover:bg-blue-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T4" class="task-container"></div></div>
+    <div id="T5" class="day-card day-green"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T5</h3><button data-permission="create" onclick="openAddTaskModal('T5')" class="text-xl hover:bg-green-200 dark:hover:bg-green-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T5" class="task-container"></div></div>
+    <div id="T6" class="day-card day-yellow"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T6</h3><button data-permission="create" onclick="openAddTaskModal('T6')" class="text-xl hover:bg-yellow-200 dark:hover:bg-yellow-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T6" class="task-container"></div></div>
+    <div id="T7" class="day-card day-stone"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">T7</h3><button data-permission="create" onclick="openAddTaskModal('T7')" class="text-xl hover:bg-stone-200 dark:hover:bg-stone-800 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-T7" class="task-container"></div></div>
+    <div id="CN" class="day-card day-gray"><div class="flex justify-between items-start mb-2"><h3 class="font-semibold text-primary">CN</h3><button data-permission="create" onclick="openAddTaskModal('CN')" class="text-xl hover:bg-gray-300 dark:hover:bg-gray-600 rounded px-2 transition-colors text-primary">+</button></div><div id="tasks-CN" class="task-container"></div></div>
   </div>
 
   <!-- Month view -->
@@ -307,35 +304,18 @@
   <div class="p-4 space-y-4">
     <div class="flex justify-between items-center">
       <h3 class="font-semibold text-lg text-primary">Tùy chọn</h3>
-      <button id="sidebar-close" class="text-secondary p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-        <i class="fas fa-times"></i>
-      </button>
+      <button id="sidebar-close" class="text-secondary p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><i class="fas fa-times"></i></button>
     </div>
 
-    <!-- Theme Toggle -->
-    <button id="theme-toggle-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors btn-hover">
-      <i id="theme-icon" class="fas fa-moon"></i>
-      <span id="theme-text">Chế độ tối</span>
-    </button>
-
-    <button id="copy-last-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors btn-hover">
-      <i class="fas fa-copy"></i>
-      <span>Sao chép tuần trước</span>
-    </button>
-
-    <button id="toggle-view-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors btn-hover">
-      <i id="view-icon" class="fas fa-calendar"></i>
-      <span id="view-text">Chuyển xem tháng</span>
-    </button>
-
-    <button id="delete-all-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors btn-hover">
-      <i class="fas fa-trash-alt"></i>
-      <span>Xóa tất cả tuần này</span>
-    </button>
+    <button id="theme-toggle-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors btn-hover"><i id="theme-icon" class="fas fa-moon"></i><span id="theme-text">Chế độ tối</span></button>
+    <button id="copy-last-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors btn-hover"><i class="fas fa-copy"></i><span>Sao chép tuần trước</span></button>
+    <button id="toggle-view-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors btn-hover"><i id="view-icon" class="fas fa-calendar"></i><span id="view-text">Chuyển xem tháng</span></button>
+    <button id="delete-all-week-btn" data-permission="delete" class="w-full flex items-center gap-2 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors btn-hover"><i class="fas fa-trash-alt"></i><span>Xóa tất cả tuần này</span></button>
+    <button id="manage-users-btn" data-permission="admin-only" class="w-full flex items-center gap-2 px-3 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg transition-colors btn-hover"><i class="fas fa-users-cog"></i><span>Quản lý User</span></button>
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Thêm/Sửa Task -->
 <div id="task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-40 flex items-center justify-center p-4 hidden z-50">
   <div class="modal-bg p-5 rounded-xl w-full max-w-sm shadow-lg-custom">
     <h2 id="modal-title" class="text-lg font-semibold mb-3 text-primary">Thêm môn học</h2>
@@ -358,16 +338,25 @@
   </div>
 </div>
 
+<!-- Modal Quản lý User -->
+<div id="user-management-modal" class="fixed inset-0 bg-gray-800 bg-opacity-60 flex items-center justify-center p-4 hidden z-50">
+  <div class="modal-bg p-5 rounded-xl w-full max-w-2xl shadow-lg-custom max-h-[80vh] flex flex-col">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold text-primary">Quản lý phân quyền User</h2>
+      <button onclick="closeUserManagementModal()" class="text-2xl text-secondary">&times;</button>
+    </div>
+    <div id="user-list-container" class="overflow-y-auto space-y-2 text-sm">
+      <!-- Danh sách user sẽ được render vào đây -->
+    </div>
+  </div>
+</div>
+
+
 <script type="module">
   // Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-  // THAY ĐỔI MỚI: Import thêm các hàm Authentication
+  import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, query, where, writeBatch, getDocs, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-
-  // THAY ĐỔI MỚI: Định nghĩa email của admin
-  const ADMIN_EMAIL = "dungchonhieu87@gmail.com"; // <-- THAY EMAIL CỦA BẠN VÀO ĐÂY
 
   // Firebase config
   const firebaseConfig = {
@@ -381,26 +370,22 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  // THAY ĐỔI MỚI: Khởi tạo Authentication
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
   const appId = firebaseConfig.projectId;
   const tasksCollectionRef = collection(db, "artifacts", appId, "public", "data", "tasks");
+  const usersCollectionRef = collection(db, "users");
 
   // Performance optimizations
   const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
+      const later = () => { clearTimeout(timeout); func(...args); };
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
     };
   };
-
   const throttle = (func, limit) => {
     let inThrottle;
     return function() {
@@ -415,6 +400,8 @@
   };
 
   // State
+  let currentUser = null; // Từ Firebase Auth
+  let currentUserPermissions = null; // Từ collection 'users'
   let currentEditingTask = null;
   let currentDate = new Date();
   let draggedElement = null;
@@ -426,447 +413,88 @@
   let currentWeekId = null;
   let unsubscribeWeek = null;
   let unsubscribeMonth = null;
-  // THAY ĐỔI MỚI: Thêm state để lưu thông tin người dùng hiện tại
-  let currentUser = null;
-
+  
   const dayMap = { 'T2':0,'T3':1,'T4':2,'T5':3,'T6':4,'T7':5,'CN':6 };
   const dayIndexToKey = ['T2','T3','T4','T5','T6','T7','CN'];
 
-  // Theme management
-  function updateTheme(theme) {
-    currentTheme = theme;
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    updateThemeButton();
-    
-    if (calendarVisible && calendarInstance) {
-      setTimeout(() => {
-        calendarInstance.render();
-      }, 100);
-    }
+  // --- HÀM KIỂM TRA QUYỀN ---
+  function hasPermission(permission) {
+    if (!currentUserPermissions) return false;
+    if (currentUserPermissions.role === 'admin') return true;
+    return currentUserPermissions.permissions?.[permission] === true;
   }
 
-  function updateThemeButton() {
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-    
-    if (currentTheme === 'dark') {
-      themeIcon.className = 'fas fa-sun';
-      themeText.textContent = 'Chế độ sáng';
-    } else {
-      themeIcon.className = 'fas fa-moon';
-      themeText.textContent = 'Chế độ tối';
-    }
-  }
-
-  // Loading state management
-  function setLoading(loading) {
-    isLoading = loading;
-    const spinner = document.getElementById('loading-spinner');
-    const syncDot = document.getElementById('sync-dot');
-    
-    if (loading) {
-      spinner.classList.remove('hidden');
-      syncDot.style.backgroundColor = 'orange';
-    } else {
-      spinner.classList.add('hidden');
-    }
-  }
-
-  // Update view button text and icon
-  function updateViewButton() {
-    const viewText = document.getElementById('view-text');
-    const viewIcon = document.getElementById('view-icon');
-    if (calendarVisible) {
-      viewText.textContent = 'Chuyển xem tuần';
-      viewIcon.className = 'fas fa-list';
-    } else {
-      viewText.textContent = 'Chuyển xem tháng';
-      viewIcon.className = 'fas fa-calendar';
-    }
-  }
-
-  // Helpers
-  function getWeekDateRange(date) {
-    const start = new Date(date);
-    const dayOfWeek = start.getDay();
-    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    start.setDate(date.getDate() - diff);
-    start.setHours(0,0,0,0);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 6);
-    end.setHours(23,59,59,999);
-    return { start, end };
-  }
-
-  function formatDate(date) {
-    if (typeof date === 'string') return date;
-    const y = date.getFullYear();
-    const m = String(date.getMonth()+1).padStart(2,'0');
-    const d = String(date.getDate()).padStart(2,'0');
-    return `${y}-${m}-${d}`;
-  }
-
-  function updateDateDisplay() {
-    const { start, end } = getWeekDateRange(currentDate);
-    const opt = { day: '2-digit', month: '2-digit' };
-    document.getElementById('current-week-display').textContent = `Tuần từ ${start.toLocaleDateString('vi-VN', opt)} đến ${end.toLocaleDateString('vi-VN', opt)}`;
-  }
-
-  async function reorderTasksInDay(day, taskElements) {
-    const tasks = Array.from(taskElements).map((el, index) => ({
-      id: el.dataset.taskId,
-      order: index + 1
-    }));
-
-    const batch = writeBatch(db);
-    tasks.forEach(task => {
-      const ref = doc(db, "artifacts", appId, "public", "data", "tasks", task.id);
-      batch.update(ref, { 
-        order: task.order,
-        updatedAt: new Date().toISOString()
-      });
+  // --- CẬP NHẬT UI DỰA TRÊN QUYỀN ---
+  function updateUIWithPermissions() {
+    // Ẩn/hiện các nút thêm task
+    document.querySelectorAll('button[data-permission="create"]').forEach(btn => {
+        btn.style.display = hasPermission('create') ? 'block' : 'none';
     });
 
-    try {
-      await batch.commit();
-    } catch (err) {
-      console.error("Error reordering tasks:", err);
-    }
-  }
-
-  const renderTasks = throttle((tasksByDay) => {
-    Object.keys(tasksByDay).forEach(day => {
-      const container = document.getElementById(`tasks-${day}`);
-      if (!container) return;
-      
-      const fragment = document.createDocumentFragment();
-      
-      tasksByDay[day].sort((a, b) => (a.order || 0) - (b.order || 0) || (a.text || '').localeCompare(b.text || ''));
-      
-      tasksByDay[day].forEach((task, index) => {
-        const cacheKey = `${task.id}-${task.updatedAt}-${task.order}`;
-        let el;
-        if (tasksCache.has(cacheKey)) {
-          el = tasksCache.get(cacheKey);
-        } else {
-          el = document.createElement('div');
-          el.className = 'task-item p-2 mb-1 rounded transition-all hover:shadow-md';
-          el.style.backgroundColor = task.color || '#e85499';
-          el.textContent = task.text || '(không tên)';
-          el.setAttribute('draggable', 'true');
-          
-          const dragHandle = document.createElement('i');
-          dragHandle.className = 'fas fa-grip-lines drag-handle';
-          el.appendChild(dragHandle);
-
-          tasksCache.set(cacheKey, el);
-        }
-        
-        el.dataset.taskId = task.id;
-        el.dataset.taskDay = task.day || '';
-        el.dataset.taskDate = task.date || '';
-        el.dataset.taskOrder = task.order || index;
-
-        setupTaskEventListeners(el, task, day);
-        fragment.appendChild(el);
-      });
-      
-      container.innerHTML = '';
-      container.appendChild(fragment);
-    });
-  }, 50);
-
-  function setupTaskEventListeners(el, task, day) {
-    el.addEventListener('click', (e) => { 
-      if (e.target.classList.contains('drag-handle')) return;
-      e.stopPropagation(); 
-      openEditTaskModal(task); 
+    // Ẩn/hiện các nút chỉ dành cho admin
+    document.querySelectorAll('[data-permission="admin-only"]').forEach(el => {
+        el.style.display = currentUserPermissions?.role === 'admin' ? 'flex' : 'none';
     });
     
-    el.addEventListener('dragstart', (e) => {
-      draggedElement = e.target;
-      e.dataTransfer.setData('text/plain', task.id);
-      e.dataTransfer.effectAllowed = 'move';
-      setTimeout(() => e.target.classList.add('dragging'), 0);
-    });
-    
-    el.addEventListener('dragend', (e) => {
-      e.target.classList.remove('dragging');
-      draggedElement = null;
-      document.querySelectorAll('.drag-over-container').forEach(c => c.classList.remove('drag-over-container'));
-      document.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
-    });
-
-    el.addEventListener('dragover', (e) => {
-      if (draggedElement && draggedElement !== el && draggedElement.dataset.taskDay === el.dataset.taskDay) {
-        e.preventDefault();
-        const container = el.parentElement;
-        const afterElement = getDragAfterElement(container, e.clientY);
-        if (afterElement == null) {
-          container.appendChild(draggedElement);
-        } else {
-          container.insertBefore(draggedElement, afterElement);
-        }
-      }
-    });
+    // Nút xóa tất cả tuần
+    document.querySelector('[data-permission="delete"]').style.display = hasPermission('delete') ? 'flex' : 'none';
   }
 
-  function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
-    return draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) {
-        return { offset: offset, element: child };
+  // --- LOGIC XỬ LÝ AUTHENTICATION ---
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        currentUserPermissions = userDocSnap.data();
       } else {
-        return closest;
-      }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-  }
-
-  function initDayCardDropHandlers() {
-    document.querySelectorAll('.day-card').forEach(element => {
-      element.addEventListener('dragover', e => e.preventDefault());
-      
-      element.addEventListener('dragenter', e => {
-        e.preventDefault();
-        const targetContainer = element.querySelector('.task-container');
-        if (draggedElement && targetContainer && draggedElement.parentElement !== targetContainer) {
-          element.classList.add('drag-over');
-        }
-      });
-      
-      element.addEventListener('dragleave', e => {
-        element.classList.remove('drag-over');
-      });
-      
-      element.addEventListener('drop', e => {
-        e.preventDefault();
-        if (!draggedElement) return;
-
-        element.classList.remove('drag-over');
-        const targetCard = element.closest('.day-card');
-        const targetContainer = targetCard.querySelector('.task-container');
-        
-        const taskId = draggedElement.dataset.taskId;
-        const originalDay = draggedElement.dataset.taskDay;
-        const newDay = targetCard.id;
-
-        if (originalDay !== newDay) {
-          const afterElement = getDragAfterElement(targetContainer, e.clientY);
-          if (afterElement) {
-            targetContainer.insertBefore(draggedElement, afterElement);
-          } else {
-            targetContainer.appendChild(draggedElement);
+        const defaultPermissions = {
+          email: user.email,
+          displayName: user.displayName,
+          role: 'user', // Mặc định là user thường
+          permissions: {
+            create: false,
+            edit: false,
+            delete: false
           }
-          draggedElement.dataset.taskDay = newDay;
-
-          const { start } = getWeekDateRange(currentDate);
-          const newDate = new Date(start);
-          newDate.setDate(start.getDate() + dayMap[newDay]);
-          
-          const ref = doc(db, "artifacts", appId, "public", "data", "tasks", taskId);
-          setDoc(ref, { 
-            day: newDay, 
-            date: formatDate(newDate),
-            updatedAt: new Date().toISOString() 
-          }, { merge: true }).catch(err => {
-            console.error("Lỗi khi di chuyển task:", err);
-            setupWeekListener(); 
-          });
-
-          const originalContainer = document.getElementById(`tasks-${originalDay}`);
-          if (originalContainer) reorderTasksInDay(originalDay, originalContainer.querySelectorAll('.task-item'));
-          reorderTasksInDay(newDay, targetContainer.querySelectorAll('.task-item'));
-
-        } else {
-          reorderTasksInDay(newDay, targetContainer.querySelectorAll('.task-item'));
-        }
-      });
-    });
-  }
-  
-  function setupWeekListener() {
-    if (unsubscribeWeek) unsubscribeWeek();
-    tasksCache.clear();
-    updateDateDisplay();
-    setLoading(true);
-    
-    const { start, end } = getWeekDateRange(currentDate);
-    const weekId = formatDate(start);
-    currentWeekId = weekId;
-
-    const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
-    
-    unsubscribeWeek = onSnapshot(q, (snapshot) => {
-      if (currentWeekId !== weekId) return;
-      
-      document.getElementById('sync-dot').style.backgroundColor = 'green';
-      const tasksByDay = { T2:[], T3:[], T4:[], T5:[], T6:[], T7:[], CN:[] };
-      
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        if (d.day && tasksByDay[d.day]) tasksByDay[d.day].push({ id: docSnap.id, ...d });
-      });
-      
-      renderTasks(tasksByDay);
-      setLoading(false);
-    }, (err) => {
-      console.error("Week listener error:", err);
-      document.getElementById('sync-dot').style.backgroundColor = 'red';
-      setLoading(false);
-    });
-  }
-
-  function fetchAndRenderMonthEvents(viewInfo) {
-    if (unsubscribeMonth) unsubscribeMonth();
-    setLoading(true);
-
-    const start = formatDate(viewInfo.start);
-    const end = formatDate(viewInfo.end);
-
-    const q = query(tasksCollectionRef, where("date", ">=", start), where("date", "<=", end));
-
-    unsubscribeMonth = onSnapshot(q, (snapshot) => {
-        const events = snapshot.docs.map(docSnap => {
-            const task = { id: docSnap.id, ...docSnap.data() };
-            return {
-                id: task.id,
-                title: task.text || '(không tên)',
-                start: task.date,
-                allDay: true,
-                backgroundColor: task.color || '#e85499',
-                borderColor: task.color || '#e85499',
-                extendedProps: { day: task.day, updatedAt: task.updatedAt, order: task.order }
-            };
-        });
-
-        if (calendarInstance) {
-            calendarInstance.removeAllEvents();
-            calendarInstance.addEventSource(events);
-        }
-        setLoading(false);
-        document.getElementById('sync-dot').style.backgroundColor = 'green';
-    }, (err) => {
-        console.error("Month listener error:", err);
-        setLoading(false);
-        document.getElementById('sync-dot').style.backgroundColor = 'red';
-    });
-  }
-
-  function initializeCalendar() {
-    if (calendarInstance) return;
-
-    const calendarEl = document.getElementById('calendar');
-    calendarInstance = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      locale: 'vi',
-      height: 'auto',
-      headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
-      
-      datesSet: (viewInfo) => {
-          fetchAndRenderMonthEvents(viewInfo.view);
-      },
-      
-      dateClick: (info) => {
-        openAddTaskModal(info.date);
-      },
-      eventClick: (info) => {
-        const ev = info.event;
-        openEditTaskModal({
-          id: ev.id,
-          text: ev.title,
-          date: formatDate(new Date(ev.start)),
-          day: ev.extendedProps?.day,
-          color: ev.backgroundColor,
-          updatedAt: ev.extendedProps?.updatedAt,
-          order: ev.extendedProps?.order
-        });
-      },
-      dayMaxEventRows: true,
-    });
-    calendarInstance.render();
-  }
-
-  async function deleteAllWeekTasks() {
-    // THAY ĐỔI MỚI: Kiểm tra quyền admin trước khi xóa
-    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
-        alert("Bạn không có quyền thực hiện hành động này.");
-        return;
-    }
-    if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?\n\nHành động này KHÔNG THỂ HOÀN TÁC!")) return;
-    
-    setLoading(true);
-    const { start, end } = getWeekDateRange(currentDate);
-    const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
-    
-    try {
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        alert("Không có môn học nào trong tuần này để xóa!");
-        return;
+        };
+        await setDoc(userDocRef, defaultPermissions);
+        currentUserPermissions = defaultPermissions;
       }
-      const batch = writeBatch(db);
-      snapshot.forEach(docSnap => batch.delete(docSnap.ref));
-      await batch.commit();
-      alert(`Đã xóa thành công ${snapshot.size} môn học!`);
-    } catch (err) {
-      console.error("Lỗi khi xóa tất cả tasks:", err);
-      alert("Đã xảy ra lỗi khi xóa. Vui lòng thử lại!");
-    } finally {
-      setLoading(false);
+    } else {
+      currentUser = null;
+      currentUserPermissions = null;
+    }
+    updateAuthUI(user);
+    updateUIWithPermissions();
+  });
+
+  const signIn = () => signInWithPopup(auth, provider).catch(err => console.error("Login error:", err));
+  const logOut = () => signOut(auth).catch(err => console.error("Logout error:", err));
+
+  function updateAuthUI(user) {
+    const authBtn = document.getElementById('auth-btn');
+    const userDisplay = document.getElementById('user-display');
+    if (user) {
+      userDisplay.textContent = user.displayName || user.email;
+      userDisplay.classList.remove('hidden');
+      authBtn.textContent = 'Đăng xuất';
+      authBtn.onclick = logOut;
+    } else {
+      userDisplay.classList.add('hidden');
+      authBtn.textContent = 'Đăng nhập';
+      authBtn.onclick = signIn;
     }
   }
 
-  async function copyLastWeekSchedule() {
-    if (!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?")) return;
-    
-    setLoading(true);
-    const lastWeekDate = new Date(currentDate);
-    lastWeekDate.setDate(currentDate.getDate() - 7);
-    const { start: lastStart, end: lastEnd } = getWeekDateRange(lastWeekDate);
-    const q = query(tasksCollectionRef, where("date", ">=", formatDate(lastStart)), where("date", "<=", formatDate(lastEnd)));
-    
-    try {
-      const snap = await getDocs(q);
-      if (snap.empty) { 
-        alert("Không tìm thấy môn học nào ở tuần trước để sao chép!"); 
-        return; 
-      }
-      
-      const { start: currentWeekStart } = getWeekDateRange(currentDate);
-      const batch = writeBatch(db);
-      
-      snap.forEach(docSnap => {
-        const t = docSnap.data();
-        const offset = dayMap[t.day];
-        if (offset !== undefined) {
-          const newDate = new Date(currentWeekStart);
-          newDate.setDate(currentWeekStart.getDate() + offset);
-          const newTask = { 
-            ...t, 
-            date: formatDate(newDate), 
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            order: t.order || 1
-          };
-          const newRef = doc(collection(db, "artifacts", appId, "public", "data", "tasks"));
-          batch.set(newRef, newTask);
-        }
-      });
-      
-      await batch.commit();
-      alert(`Đã sao chép ${snap.size} môn học từ tuần trước!`);
-    } catch (err) {
-      console.error("Lỗi khi commit batch:", err);
-      alert("Đã xảy ra lỗi khi sao chép. Vui lòng thử lại!");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // --- CẬP NHẬT CÁC HÀM CRUD ĐỂ KIỂM TRA QUYỀN ---
   window.openAddTaskModal = (dayOrDate) => {
+    if (!hasPermission('create')) {
+      alert("Bạn không có quyền thêm môn học.");
+      return;
+    }
     currentEditingTask = null;
     document.getElementById('modal-title').textContent = 'Thêm môn học';
     const taskText = document.getElementById('task-text');
@@ -903,13 +531,14 @@
     document.getElementById('task-last-updated').textContent = task.updatedAt ? 
       `Sửa lần cuối: ${new Date(task.updatedAt).toLocaleString('vi-VN')}` : '';
     
-    // THAY ĐỔI MỚI: Chỉ hiển thị nút xóa nếu là admin
+    const saveBtn = document.getElementById('save-task-btn');
     const deleteBtn = document.getElementById('delete-task-btn');
-    if (currentUser && currentUser.email === ADMIN_EMAIL) {
-        deleteBtn.classList.remove('hidden');
-    } else {
-        deleteBtn.classList.add('hidden');
-    }
+    
+    saveBtn.disabled = !hasPermission('edit');
+    saveBtn.style.cursor = hasPermission('edit') ? 'pointer' : 'not-allowed';
+    saveBtn.style.opacity = hasPermission('edit') ? '1' : '0.5';
+    
+    deleteBtn.style.display = hasPermission('delete') ? 'block' : 'none';
     
     document.getElementById('task-modal').classList.remove('hidden');
     setTimeout(() => {
@@ -918,12 +547,16 @@
     }, 100);
   };
 
-  window.closeModal = () => {
-    document.getElementById('task-modal').classList.add('hidden');
-    currentEditingTask = null;
-  };
-
   window.saveTask = async () => {
+    if (!currentEditingTask && !hasPermission('create')) {
+        alert('Bạn không có quyền thêm môn học.');
+        return;
+    }
+    if (currentEditingTask && !hasPermission('edit')) {
+        alert('Bạn không có quyền sửa môn học.');
+        return;
+    }
+    
     const text = document.getElementById('task-text').value.trim();
     if (!text) { 
       alert('Vui lòng nhập nội dung môn học!'); 
@@ -954,21 +587,20 @@
         payload.createdAt = new Date().toISOString();
         const container = document.getElementById(`tasks-${day}`);
         payload.order = container ? container.children.length + 1 : 1;
-        await setDoc(doc(collection(db, "artifacts", appId, "public", "data", "tasks")), payload);
+        await setDoc(doc(tasksCollectionRef), payload);
       }
       closeModal();
     } catch (err) {
-      console.error("Lưu lỗi:", err);
-      alert("Lỗi khi lưu. Vui lòng thử lại!");
+      console.error("Lỗi khi lưu:", err);
+      alert("Lỗi khi lưu. Vui lòng thử lại! (Có thể bạn không có quyền thực hiện hành động này).");
     } finally {
       setLoading(false);
     }
   };
 
   window.deleteTask = async () => {
-    // THAY ĐỔI MỚI: Kiểm tra quyền admin một lần nữa trước khi xóa
-    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
-        alert("Bạn không có quyền thực hiện hành động này.");
+    if (!hasPermission('delete')) {
+        alert("Bạn không có quyền xóa môn học.");
         return;
     }
     if (!currentEditingTask || !currentEditingTask.id || !confirm('Bạn có chắc muốn xóa môn học này không?')) return;
@@ -978,154 +610,145 @@
       await deleteDoc(doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id));
       closeModal();
     } catch (err) {
-      console.error("Xóa lỗi:", err);
+      console.error("Lỗi khi xóa:", err);
       alert("Lỗi khi xóa. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
   };
 
-  const debouncedWeekNavigation = debounce((direction) => {
-    currentDate.setDate(currentDate.getDate() + (direction * 7));
-    setupWeekListener();
-  }, 100);
-
-  // --- THAY ĐỔI MỚI: Thêm các hàm xử lý đăng nhập/đăng xuất ---
-  
-  // Hàm đăng nhập bằng Google
-  const signIn = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Lỗi khi đăng nhập:", error);
+  async function deleteAllWeekTasks() {
+    if (!hasPermission('delete')) {
+        alert("Bạn không có quyền thực hiện hành động này.");
+        return;
     }
-  };
-
-  // Hàm đăng xuất
-  const logOut = async () => {
+    if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?\n\nHành động này KHÔNG THỂ HOÀN TÁC!")) return;
+    
+    setLoading(true);
+    const { start, end } = getWeekDateRange(currentDate);
+    const q = query(tasksCollectionRef, where("date", ">=", formatDate(start)), where("date", "<=", formatDate(end)));
+    
     try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Lỗi khi đăng xuất:", error);
-    }
-  };
-
-  // Hàm cập nhật giao diện dựa trên trạng thái đăng nhập
-  const updateAuthUI = (user) => {
-    const authBtn = document.getElementById('auth-btn');
-    const userDisplay = document.getElementById('user-display');
-    const deleteAllBtn = document.getElementById('delete-all-week-btn');
-
-    if (user) {
-      // Nếu đã đăng nhập
-      userDisplay.textContent = user.displayName || user.email;
-      userDisplay.classList.remove('hidden');
-      authBtn.textContent = 'Đăng xuất';
-      authBtn.onclick = logOut;
-
-      // Hiển thị nút "Xóa tất cả" nếu là admin
-      if (user.email === ADMIN_EMAIL) {
-        deleteAllBtn.style.display = 'flex';
-      } else {
-        deleteAllBtn.style.display = 'none';
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) {
+        alert("Không có môn học nào trong tuần này để xóa!");
+        setLoading(false);
+        return;
       }
-
-    } else {
-      // Nếu chưa đăng nhập
-      userDisplay.textContent = '';
-      userDisplay.classList.add('hidden');
-      authBtn.textContent = 'Đăng nhập';
-      authBtn.onclick = signIn;
-      deleteAllBtn.style.display = 'none'; // Ẩn nút "Xóa tất cả"
+      const batch = writeBatch(db);
+      snapshot.forEach(docSnap => batch.delete(docSnap.ref));
+      await batch.commit();
+      alert(`Đã xóa thành công ${snapshot.size} môn học!`);
+    } catch (err) {
+      console.error("Lỗi khi xóa tất cả tasks:", err);
+      alert("Đã xảy ra lỗi khi xóa. Vui lòng thử lại!");
+    } finally {
+      setLoading(false);
     }
   }
-  
-  // Lắng nghe sự thay đổi trạng thái đăng nhập
-  onAuthStateChanged(auth, user => {
-      currentUser = user;
-      updateAuthUI(user);
+
+  // --- LOGIC CHO MODAL QUẢN LÝ USER ---
+  const userManagementModal = document.getElementById('user-management-modal');
+  const userListContainer = document.getElementById('user-list-container');
+
+  window.openUserManagementModal = async () => {
+    const userDocs = await getDocs(usersCollectionRef);
+    let html = `
+      <div class="grid grid-cols-4 gap-2 font-bold p-2 border-b border-custom">
+        <div>Email</div>
+        <div class="text-center">Thêm</div>
+        <div class="text-center">Sửa</div>
+        <div class="text-center">Xóa</div>
+      </div>
+    `;
+
+    userDocs.forEach(docSnap => {
+        const user = docSnap.data();
+        if (user.role === 'admin') return;
+
+        const perms = user.permissions || {};
+        html += `
+          <div class="grid grid-cols-4 gap-2 items-center p-2 border-b border-custom hover:bg-tertiary">
+            <div class="truncate" title="${user.email}">${user.displayName || user.email}</div>
+            <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="create" ${perms.create ? 'checked' : ''} class="w-5 h-5"></div>
+            <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="edit" ${perms.edit ? 'checked' : ''} class="w-5 h-5"></div>
+            <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="delete" ${perms.delete ? 'checked' : ''} class="w-5 h-5"></div>
+          </div>
+        `;
+    });
+    userListContainer.innerHTML = html;
+    
+    userListContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', async (e) => {
+        const uid = e.target.dataset.uid;
+        const perm = e.target.dataset.perm;
+        const value = e.target.checked;
+        
+        const userDocRef = doc(db, "users", uid);
+        try {
+          await updateDoc(userDocRef, { [`permissions.${perm}`]: value });
+          console.log(`Updated permission ${perm} for user ${uid} to ${value}`);
+        } catch (error) {
+          console.error("Failed to update permission:", error);
+          alert("Lỗi! Không thể cập nhật quyền.");
+          e.target.checked = !value;
+        }
+      });
+    });
+
+    userManagementModal.classList.remove('hidden');
+  }
+
+  window.closeUserManagementModal = () => {
+    userManagementModal.classList.add('hidden');
+  }
+
+  document.getElementById('manage-users-btn').addEventListener('click', () => {
+      openUserManagementModal();
+      closeSidebar();
   });
   
-  // --- KẾT THÚC THAY ĐỔI MỚI ---
 
-  // UI interactions
+  // --- CÁC HÀM CŨ VÀ EVENT LISTENERS (giữ nguyên không thay đổi nhiều) ---
+  // (Phần này chứa các hàm như updateTheme, getWeekDateRange, formatDate, reorderTasksInDay, renderTasks, setupWeekListener, initializeCalendar, copyLastWeekSchedule, v.v...)
+  // Vì chúng quá dài và không thay đổi, tôi sẽ không lặp lại toàn bộ ở đây để giữ câu trả lời gọn gàng.
+  // Bạn chỉ cần đảm bảo rằng chúng vẫn có trong file của bạn.
+  
+  // Các hàm tiện ích
+  function updateTheme(theme){currentTheme=theme,document.documentElement.setAttribute("data-theme",theme),localStorage.setItem("theme",theme),updateThemeButton(),calendarVisible&&calendarInstance&&setTimeout(()=>{calendarInstance.render()},100)}function updateThemeButton(){const e=document.getElementById("theme-icon"),t=document.getElementById("theme-text");"dark"===currentTheme?(e.className="fas fa-sun",t.textContent="Chế độ sáng"):(e.className="fas fa-moon",t.textContent="Chế độ tối")}function setLoading(e){isLoading=e;const t=document.getElementById("loading-spinner"),n=document.getElementById("sync-dot");e?(t.classList.remove("hidden"),n.style.backgroundColor="orange"):t.classList.add("hidden")}function updateViewButton(){const e=document.getElementById("view-text"),t=document.getElementById("view-icon");calendarVisible?(e.textContent="Chuyển xem tuần",t.className="fas fa-list"):(e.textContent="Chuyển xem tháng",t.className="fas fa-calendar")}function getWeekDateRange(e){const t=new Date(e),n=t.getDay(),o=0===n?6:n-1;t.setDate(e.getDate()-o),t.setHours(0,0,0,0);const s=new Date(t);return s.setDate(t.getDate()+6),s.setHours(23,59,59,999),{start:t,end:s}}function formatDate(e){if("string"==typeof e)return e;const t=e.getFullYear(),n=String(e.getMonth()+1).padStart(2,"0"),o=String(e.getDate()).padStart(2,"0");return`${t}-${n}-${o}`}function updateDateDisplay(){const{start:e,end:t}=getWeekDateRange(currentDate),n={day:"2-digit",month:"2-digit"};document.getElementById("current-week-display").textContent=`Tuần từ ${e.toLocaleDateString("vi-VN",n)} đến ${t.toLocaleDateString("vi-VN",n)}`}async function reorderTasksInDay(e,t){const n=Array.from(t).map((e,t)=>({id:e.dataset.taskId,order:t+1})),o=writeBatch(db);n.forEach(e=>{const t=doc(db,"artifacts",appId,"public","data","tasks",e.id);o.update(t,{order:e.order,updatedAt:(new Date).toISOString()})});try{await o.commit()}catch(e){console.error("Error reordering tasks:",e)}}const renderTasks=throttle(e=>{Object.keys(e).forEach(t=>{const n=document.getElementById(`tasks-${t}`);if(!n)return;const o=document.createDocumentFragment();e[t].sort((e,t)=>(e.order||0)-(t.order||0)||(e.text||"").localeCompare(t.text||"")),e[t].forEach((e,s)=>{const a=e.id+"-"+e.updatedAt+"-"+e.order;let r;if(tasksCache.has(a))r=tasksCache.get(a);else{r=document.createElement("div"),r.className="task-item p-2 mb-1 rounded transition-all hover:shadow-md",r.style.backgroundColor=e.color||"#e85499",r.textContent=e.text||"(không tên)",r.setAttribute("draggable","true");const t=document.createElement("i");t.className="fas fa-grip-lines drag-handle",r.appendChild(t),tasksCache.set(a,r)}r.dataset.taskId=e.id,r.dataset.taskDay=e.day||"",r.dataset.taskDate=e.date||"",r.dataset.taskOrder=e.order||s,setupTaskEventListeners(r,e,t),o.appendChild(r)}),n.innerHTML="",n.appendChild(o)})},50);function setupTaskEventListeners(e,t,n){e.addEventListener("click",n=>{n.target.classList.contains("drag-handle")||(n.stopPropagation(),openEditTaskModal(t))}),e.addEventListener("dragstart",n=>{draggedElement=n.target,n.dataTransfer.setData("text/plain",t.id),n.dataTransfer.effectAllowed="move",setTimeout(()=>{n.target.classList.add("dragging")},0)}),e.addEventListener("dragend",e=>{e.target.classList.remove("dragging"),draggedElement=null,document.querySelectorAll(".drag-over-container").forEach(e=>e.classList.remove("drag-over-container")),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"))}),e.addEventListener("dragover",t=>{if(draggedElement&&draggedElement!==e&&draggedElement.dataset.taskDay===e.dataset.taskDay){t.preventDefault();const n=e.parentElement,o=getDragAfterElement(n,t.clientY);null==o?n.appendChild(draggedElement):n.insertBefore(draggedElement,o)}})}function getDragAfterElement(e,t){const n=[...e.querySelectorAll(".task-item:not(.dragging)")];return n.reduce((e,n)=>{const o=n.getBoundingClientRect(),s=t-o.top-o.height/2;return s<0&&s>e.offset?{offset:s,element:n}:e},{offset:Number.NEGATIVE_INFINITY}).element}function initDayCardDropHandlers(){document.querySelectorAll(".day-card").forEach(e=>{e.addEventListener("dragover",e=>e.preventDefault()),e.addEventListener("dragenter",t=>{t.preventDefault();const n=e.querySelector(".task-container");draggedElement&&n&&draggedElement.parentElement!==n&&e.classList.add("drag-over")}),e.addEventListener("dragleave",t=>{e.classList.remove("drag-over")}),e.addEventListener("drop",t=>{if(t.preventDefault(),!draggedElement)return;e.classList.remove("drag-over");const n=e.closest(".day-card"),o=n.querySelector(".task-container"),s=draggedElement.dataset.taskId,a=draggedElement.dataset.taskDay,r=n.id;if(a!==r){const e=getDragAfterElement(o,t.clientY);e?o.insertBefore(draggedElement,e):o.appendChild(draggedElement),draggedElement.dataset.taskDay=r;const{start:i}=getWeekDateRange(currentDate),c=new Date(i);c.setDate(i.getDate()+dayMap[r]);const d=doc(db,"artifacts",appId,"public","data","tasks",s);setDoc(d,{day:r,date:formatDate(c),updatedAt:(new Date).toISOString()},{merge:!0}).catch(e=>{console.error("Lỗi khi di chuyển task:",e),setupWeekListener()});const l=document.getElementById(`tasks-${a}`);l&&reorderTasksInDay(a,l.querySelectorAll(".task-item")),reorderTasksInDay(r,o.querySelectorAll(".task-item"))}else reorderTasksInDay(r,o.querySelectorAll(".task-item"))})})}
+  function setupWeekListener(){unsubscribeWeek&&unsubscribeWeek(),tasksCache.clear(),updateDateDisplay(),setLoading(!0);const{start:e,end:t}=getWeekDateRange(currentDate),n=formatDate(e);currentWeekId=n;const o=query(tasksCollectionRef,where("date",">=",formatDate(e)),where("date","<=",formatDate(t)));unsubscribeWeek=onSnapshot(o,e=>{if(currentWeekId!==n)return;document.getElementById("sync-dot").style.backgroundColor="green";const o={T2:[],T3:[],T4:[],T5:[],T6:[],T7:[],CN:[]};e.forEach(e=>{const t=e.data();t.day&&o[t.day]&&o[t.day].push({id:e.id,...t})}),renderTasks(o),setLoading(!1)},e=>{console.error("Week listener error:",e),document.getElementById("sync-dot").style.backgroundColor="red",setLoading(!1)})}function fetchAndRenderMonthEvents(e){unsubscribeMonth&&unsubscribeMonth(),setLoading(!0);const t=formatDate(e.start),n=formatDate(e.end),o=query(tasksCollectionRef,where("date",">=",t),where("date","<=",n));unsubscribeMonth=onSnapshot(o,e=>{const t=e.docs.map(e=>{const t={id:e.id,...e.data()};return{id:t.id,title:t.text||"(không tên)",start:t.date,allDay:!0,backgroundColor:t.color||"#e85499",borderColor:t.color||"#e85499",extendedProps:{day:t.day,updatedAt:t.updatedAt,order:t.order}}});calendarInstance&&(calendarInstance.removeAllEvents(),calendarInstance.addEventSource(t)),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="green"},e=>{console.error("Month listener error:",e),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="red"})}function initializeCalendar(){if(calendarInstance)return;const e=document.getElementById("calendar");calendarInstance=new FullCalendar.Calendar(e,{initialView:"dayGridMonth",locale:"vi",height:"auto",headerToolbar:{left:"prev,next today",center:"title",right:"dayGridMonth,dayGridWeek"},datesSet:e=>{fetchAndRenderMonthEvents(e.view)},dateClick:e=>{openAddTaskModal(e.date)},eventClick:e=>{const t=e.event;openEditTaskModal({id:t.id,text:t.title,date:formatDate(new Date(t.start)),day:t.extendedProps?.day,color:t.backgroundColor,updatedAt:t.extendedProps?.updatedAt,order:t.extendedProps?.order})},dayMaxEventRows:!0}),calendarInstance.render()}async function copyLastWeekSchedule(){if(!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?"))return;setLoading(!0);const e=new Date(currentDate);e.setDate(currentDate.getDate()-7);const{start:t,end:n}=getWeekDateRange(e),o=query(tasksCollectionRef,where("date",">=",formatDate(t)),where("date","<=",formatDate(n)));try{const e=await getDocs(o);if(e.empty)return void alert("Không tìm thấy môn học nào ở tuần trước để sao chép!");const{start:t}=getWeekDateRange(currentDate),s=writeBatch(db);e.forEach(e=>{const n=e.data(),o=dayMap[n.day];if(void 0!==o){const a=new Date(t);a.setDate(t.getDate()+o);const r={...n,date:formatDate(a),createdAt:(new Date).toISOString(),updatedAt:(new Date).toISOString(),order:n.order||1},i=doc(collection(db,"artifacts",appId,"public","data","tasks"));s.set(i,r)}}),await s.commit(),alert(`Đã sao chép ${e.size} môn học từ tuần trước!`)}catch(e){console.error("Lỗi khi commit batch:",e),alert("Đã xảy ra lỗi khi sao chép. Vui lòng thử lại!")}finally{setLoading(!1)}}
+  window.closeModal = () => { document.getElementById('task-modal').classList.add('hidden'); currentEditingTask = null; };
+  const debouncedWeekNavigation = debounce((direction) => { currentDate.setDate(currentDate.getDate() + (direction * 7)); setupWeekListener(); }, 100);
   document.getElementById('prev-week-btn').addEventListener('click', () => debouncedWeekNavigation(-1));
   document.getElementById('next-week-btn').addEventListener('click', () => debouncedWeekNavigation(1));
-  document.getElementById('theme-toggle-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    updateTheme(currentTheme === 'light' ? 'dark' : 'light');
-    closeSidebar();
-  });
-
-  // Sidebar management
+  document.getElementById('theme-toggle-btn').addEventListener('click', (e) => { e.stopPropagation(); updateTheme(currentTheme === 'light' ? 'dark' : 'light'); closeSidebar(); });
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
   const sidebarClose = document.getElementById('sidebar-close');
-
   function openSidebar() { sidebar.classList.remove('translate-x-full'); }
   function closeSidebar() { sidebar.classList.add('translate-x-full'); }
-
   menuToggle.addEventListener('click', e => { e.stopPropagation(); openSidebar(); });
   sidebarClose.addEventListener('click', closeSidebar);
-  document.addEventListener('click', (e) => {
-    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-      closeSidebar();
-    }
-  });
-
-  // Sidebar actions
-  document.getElementById('copy-last-week-btn').addEventListener('click', async (e) => { 
-    e.stopPropagation(); await copyLastWeekSchedule(); closeSidebar(); 
-  });
+  document.addEventListener('click', (e) => { if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) { closeSidebar(); } });
+  document.getElementById('copy-last-week-btn').addEventListener('click', async (e) => { e.stopPropagation(); await copyLastWeekSchedule(); closeSidebar(); });
   document.getElementById('copy-last-week-btn-inline').addEventListener('click', copyLastWeekSchedule);
-  document.getElementById('delete-all-week-btn').addEventListener('click', async (e) => {
-    e.stopPropagation(); await deleteAllWeekTasks(); closeSidebar();
-  });
-  
+  document.getElementById('delete-all-week-btn').addEventListener('click', async (e) => { e.stopPropagation(); await deleteAllWeekTasks(); closeSidebar(); });
   document.getElementById('toggle-view-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    calendarVisible = !calendarVisible;
-    
+    e.stopPropagation(); calendarVisible = !calendarVisible;
     const weekView = document.getElementById('week-view');
     const monthView = document.getElementById('month-view');
     const weekNav = document.querySelector('.flex.items-center.p-2.gap-2');
-
     weekView.classList.toggle('hidden', calendarVisible);
     monthView.classList.toggle('hidden', !calendarVisible);
     weekNav.classList.toggle('hidden', calendarVisible);
-
-    if (calendarVisible) {
-      if (unsubscribeWeek) {
-        unsubscribeWeek();
-        unsubscribeWeek = null;
-      }
-      initializeCalendar();
-    } else {
-      if (unsubscribeMonth) {
-        unsubscribeMonth();
-        unsubscribeMonth = null;
-      }
-      setupWeekListener();
-    }
-    
-    updateViewButton();
-    closeSidebar();
+    if (calendarVisible) { if (unsubscribeWeek) { unsubscribeWeek(); unsubscribeWeek = null; } initializeCalendar(); } else { if (unsubscribeMonth) { unsubscribeMonth(); unsubscribeMonth = null; } setupWeekListener(); }
+    updateViewButton(); closeSidebar();
   });
-
-  // Modal backdrop and keyboard shortcuts
-  document.getElementById('task-modal').addEventListener('click', e => { 
-    if (e.target === e.currentTarget) closeModal(); 
-  });
-
+  document.getElementById('task-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.addEventListener('keydown', throttle((e) => {
     const modalHidden = document.getElementById('task-modal').classList.contains('hidden');
-    if (e.key === 'Escape') {
-      if (!modalHidden) closeModal();
-      else if (!sidebar.classList.contains('translate-x-full')) closeSidebar();
-    }
-    if (e.key === 'Enter' && !modalHidden && !isLoading) {
-      e.preventDefault(); window.saveTask();
-    }
+    if (e.key === 'Escape') { if (!modalHidden) closeModal(); else if (!sidebar.classList.contains('translate-x-full')) closeSidebar(); }
+    if (e.key === 'Enter' && !modalHidden && !isLoading) { e.preventDefault(); window.saveTask(); }
     if (modalHidden && !calendarVisible && !isLoading && e.ctrlKey) {
       if (e.key === 'ArrowLeft') { e.preventDefault(); debouncedWeekNavigation(-1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); debouncedWeekNavigation(1); }
@@ -1138,6 +761,7 @@
       updateViewButton();
       initDayCardDropHandlers();
       setupWeekListener();
+      updateUIWithPermissions();
       console.log('App initialized successfully');
     } catch (error) {
       console.error('Initialization error:', error);
