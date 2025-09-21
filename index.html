@@ -168,57 +168,17 @@
       filter: brightness(0.9);
     }
 
-    /* Dark mode calendar styles */
-    [data-theme="dark"] .fc {
-      background-color: var(--bg-secondary);
-      color: var(--text-primary);
-    }
+    [data-theme="dark"] .fc { background-color: var(--bg-secondary); color: var(--text-primary); }
+    [data-theme="dark"] .fc-theme-standard td, [data-theme="dark"] .fc-theme-standard th { border-color: var(--border-color); }
+    [data-theme="dark"] .fc-button { background-color: #8b5cf6; border-color: #8b5cf6; }
+    [data-theme="dark"] .fc-button:hover { background-color: #7c3aed; border-color: #7c3aed; }
+    [data-theme="dark"] .fc-daygrid-day { background-color: var(--bg-secondary); }
+    [data-theme="dark"] .fc-col-header-cell { background-color: var(--bg-tertiary); }
 
-    [data-theme="dark"] .fc-theme-standard td,
-    [data-theme="dark"] .fc-theme-standard th {
-      border-color: var(--border-color);
-    }
-
-    [data-theme="dark"] .fc-button {
-      background-color: #8b5cf6;
-      border-color: #8b5cf6;
-    }
-
-    [data-theme="dark"] .fc-button:hover {
-      background-color: #7c3aed;
-      border-color: #7c3aed;
-    }
-
-    [data-theme="dark"] .fc-daygrid-day {
-      background-color: var(--bg-secondary);
-    }
-
-    [data-theme="dark"] .fc-col-header-cell {
-      background-color: var(--bg-tertiary);
-    }
-
-    /* Loading spinner */
-    .spinner {
-      border: 2px solid var(--border-color);
-      border-top: 2px solid #8b5cf6;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Performance optimizations */
-    .day-card, .task-item {
-      contain: layout style;
-      will-change: transform;
-    }
-
-    /* Color variations for days in dark mode */
+    .spinner { border: 2px solid var(--border-color); border-top: 2px solid #8b5cf6; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .day-card, .task-item { contain: layout style; will-change: transform; }
+    
     [data-theme="dark"] .day-pink { background-color: #4c1d95; }
     [data-theme="dark"] .day-purple { background-color: #581c87; }
     [data-theme="dark"] .day-blue { background-color: #1e3a8a; }
@@ -237,10 +197,8 @@
   </style>
 
   <script>
-    // Theme detection and application (before DOM load for no flash)
     (function() {
-      const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', savedTheme);
     })();
   </script>
@@ -268,18 +226,14 @@
 
   <!-- Navigation -->
   <div class="flex items-center p-2 gap-2">
-    <button id="prev-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all">
-      <i class="fas fa-arrow-left"></i>
-    </button>
+    <button id="prev-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all"><i class="fas fa-arrow-left"></i></button>
     <div class="text-center flex-1 px-2">
       <h2 id="current-week-display" class="text-sm font-semibold text-primary"></h2>
       <div class="text-xs text-blue-500 mt-1 hidden sm:block">
         <button id="copy-last-week-btn-inline" class="underline hover:text-blue-700 transition-colors">Sao chép lịch từ tuần trước</button>
       </div>
     </div>
-    <button id="next-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all">
-      <i class="fas fa-arrow-right"></i>
-    </button>
+    <button id="next-week-btn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-sm btn-hover transition-all"><i class="fas fa-arrow-right"></i></button>
   </div>
 
   <!-- Week view -->
@@ -306,7 +260,6 @@
       <h3 class="font-semibold text-lg text-primary">Tùy chọn</h3>
       <button id="sidebar-close" class="text-secondary p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><i class="fas fa-times"></i></button>
     </div>
-
     <button id="theme-toggle-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors btn-hover"><i id="theme-icon" class="fas fa-moon"></i><span id="theme-text">Chế độ tối</span></button>
     <button id="copy-last-week-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors btn-hover"><i class="fas fa-copy"></i><span>Sao chép tuần trước</span></button>
     <button id="toggle-view-btn" class="w-full flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors btn-hover"><i id="view-icon" class="fas fa-calendar"></i><span id="view-text">Chuyển xem tháng</span></button>
@@ -360,12 +313,12 @@
 
   // Firebase config
   const firebaseConfig = {
-    apiKey: "AIzaSyDUQpOlvgn1TwT8TkfdHyesl1bc3Qbn0pM",
-    authDomain: "dulieulichhoc.firebaseapp.com",
-    projectId: "dulieulichhoc",
-    storageBucket: "dulieulichhoc.firebasestorage.app",
-    messagingSenderId: "46236518897",
-    appId: "1:46236518897:web:8a6692006e802902965c50"
+    apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs",
+    authDomain: "lichhoc-13811.firebaseapp.com",
+    projectId: "lichhoc-13811",
+    storageBucket: "lichhoc-13811.firebasestorage.app",
+    messagingSenderId: "495829238108",
+    appId: "1:495829238108:web:970c3799dd94d662edc199"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -400,8 +353,8 @@
   };
 
   // State
-  let currentUser = null; // Từ Firebase Auth
-  let currentUserPermissions = null; // Từ collection 'users'
+  let currentUser = null;
+  let currentUserPermissions = null;
   let currentEditingTask = null;
   let currentDate = new Date();
   let draggedElement = null;
@@ -417,51 +370,44 @@
   const dayMap = { 'T2':0,'T3':1,'T4':2,'T5':3,'T6':4,'T7':5,'CN':6 };
   const dayIndexToKey = ['T2','T3','T4','T5','T6','T7','CN'];
 
-  // --- HÀM KIỂM TRA QUYỀN ---
   function hasPermission(permission) {
     if (!currentUserPermissions) return false;
     if (currentUserPermissions.role === 'admin') return true;
     return currentUserPermissions.permissions?.[permission] === true;
   }
 
-  // --- CẬP NHẬT UI DỰA TRÊN QUYỀN ---
   function updateUIWithPermissions() {
-    // Ẩn/hiện các nút thêm task
     document.querySelectorAll('button[data-permission="create"]').forEach(btn => {
-        btn.style.display = hasPermission('create') ? 'block' : 'none';
+      btn.style.display = hasPermission('create') ? 'block' : 'none';
     });
-
-    // Ẩn/hiện các nút chỉ dành cho admin
     document.querySelectorAll('[data-permission="admin-only"]').forEach(el => {
-        el.style.display = currentUserPermissions?.role === 'admin' ? 'flex' : 'none';
+      el.style.display = currentUserPermissions?.role === 'admin' ? 'flex' : 'none';
     });
-    
-    // Nút xóa tất cả tuần
     document.querySelector('[data-permission="delete"]').style.display = hasPermission('delete') ? 'flex' : 'none';
   }
 
-  // --- LOGIC XỬ LÝ AUTHENTICATION ---
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
       const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists()) {
-        currentUserPermissions = userDocSnap.data();
-      } else {
-        const defaultPermissions = {
-          email: user.email,
-          displayName: user.displayName,
-          role: 'user', // Mặc định là user thường
-          permissions: {
-            create: false,
-            edit: false,
-            delete: false
-          }
-        };
-        await setDoc(userDocRef, defaultPermissions);
-        currentUserPermissions = defaultPermissions;
+      try {
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          currentUserPermissions = userDocSnap.data();
+        } else {
+          const defaultPermissions = {
+            email: user.email,
+            displayName: user.displayName,
+            role: 'user',
+            permissions: { create: false, edit: false, delete: false }
+          };
+          await setDoc(userDocRef, defaultPermissions);
+          currentUserPermissions = defaultPermissions;
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy/tạo thông tin user:", error);
+        // Ngăn không cho user tương tác nếu có lỗi quyền
+        currentUserPermissions = null; 
       }
     } else {
       currentUser = null;
@@ -471,8 +417,12 @@
     updateUIWithPermissions();
   });
 
-  const signIn = () => signInWithPopup(auth, provider).catch(err => console.error("Login error:", err));
-  const logOut = () => signOut(auth).catch(err => console.error("Logout error:", err));
+  const signIn = () => signInWithPopup(auth, provider).catch(err => {
+    console.error("Lỗi đăng nhập:", err);
+    alert("Đã xảy ra lỗi khi đăng nhập. Vui lòng kiểm tra console để biết thêm chi tiết.");
+  });
+
+  const logOut = () => signOut(auth).catch(err => console.error("Lỗi đăng xuất:", err));
 
   function updateAuthUI(user) {
     const authBtn = document.getElementById('auth-btn');
@@ -489,7 +439,6 @@
     }
   }
 
-  // --- CẬP NHẬT CÁC HÀM CRUD ĐỂ KIỂM TRA QUYỀN ---
   window.openAddTaskModal = (dayOrDate) => {
     if (!hasPermission('create')) {
       alert("Bạn không có quyền thêm môn học.");
@@ -502,7 +451,6 @@
     document.getElementById('delete-task-btn').classList.add('hidden');
     document.getElementById('task-color').value = '#e85499';
     document.getElementById('task-last-updated').textContent = '';
-
     if (typeof dayOrDate === 'string' && dayMap[dayOrDate] !== undefined) {
       document.getElementById('task-day').value = dayOrDate;
       const { start } = getWeekDateRange(currentDate);
@@ -515,7 +463,6 @@
       document.getElementById('task-day').value = key;
       document.getElementById('task-date').value = formatDate(dt);
     }
-    
     document.getElementById('task-modal').classList.remove('hidden');
     setTimeout(() => taskText.focus(), 100);
   };
@@ -541,34 +488,20 @@
     deleteBtn.style.display = hasPermission('delete') ? 'block' : 'none';
     
     document.getElementById('task-modal').classList.remove('hidden');
-    setTimeout(() => {
-      taskText.focus();
-      taskText.select();
-    }, 100);
+    setTimeout(() => { taskText.focus(); taskText.select(); }, 100);
   };
 
   window.saveTask = async () => {
-    if (!currentEditingTask && !hasPermission('create')) {
-        alert('Bạn không có quyền thêm môn học.');
-        return;
-    }
-    if (currentEditingTask && !hasPermission('edit')) {
-        alert('Bạn không có quyền sửa môn học.');
-        return;
-    }
+    if (!currentEditingTask && !hasPermission('create')) { return alert('Bạn không có quyền thêm môn học.'); }
+    if (currentEditingTask && !hasPermission('edit')) { return alert('Bạn không có quyền sửa môn học.'); }
     
     const text = document.getElementById('task-text').value.trim();
-    if (!text) { 
-      alert('Vui lòng nhập nội dung môn học!'); 
-      document.getElementById('task-text').focus();
-      return; 
-    }
+    if (!text) { return alert('Vui lòng nhập nội dung môn học!'); }
     
     const day = document.getElementById('task-day').value;
-    const dateVal = document.getElementById('task-date').value;
     const { start } = getWeekDateRange(currentDate);
     const d = new Date(start); d.setDate(start.getDate() + dayMap[day]);
-    const finalDate = dateVal || formatDate(d);
+    const finalDate = document.getElementById('task-date').value || formatDate(d);
     
     const payload = { 
       text, day, 
@@ -581,8 +514,7 @@
     try {
       if (currentEditingTask && currentEditingTask.id) {
         payload.order = currentEditingTask.order || 1;
-        const ref = doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id);
-        await setDoc(ref, payload, { merge: true });
+        await setDoc(doc(tasksCollectionRef, currentEditingTask.id), payload, { merge: true });
       } else {
         payload.createdAt = new Date().toISOString();
         const container = document.getElementById(`tasks-${day}`);
@@ -599,15 +531,12 @@
   };
 
   window.deleteTask = async () => {
-    if (!hasPermission('delete')) {
-        alert("Bạn không có quyền xóa môn học.");
-        return;
-    }
+    if (!hasPermission('delete')) { return alert("Bạn không có quyền xóa môn học."); }
     if (!currentEditingTask || !currentEditingTask.id || !confirm('Bạn có chắc muốn xóa môn học này không?')) return;
     
     setLoading(true);
     try {
-      await deleteDoc(doc(db, "artifacts", appId, "public", "data", "tasks", currentEditingTask.id));
+      await deleteDoc(doc(tasksCollectionRef, currentEditingTask.id));
       closeModal();
     } catch (err) {
       console.error("Lỗi khi xóa:", err);
@@ -618,11 +547,8 @@
   };
 
   async function deleteAllWeekTasks() {
-    if (!hasPermission('delete')) {
-        alert("Bạn không có quyền thực hiện hành động này.");
-        return;
-    }
-    if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?\n\nHành động này KHÔNG THỂ HOÀN TÁC!")) return;
+    if (!hasPermission('delete')) { return alert("Bạn không có quyền thực hiện hành động này."); }
+    if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ môn học trong tuần này không?")) return;
     
     setLoading(true);
     const { start, end } = getWeekDateRange(currentDate);
@@ -631,9 +557,8 @@
     try {
       const snapshot = await getDocs(q);
       if (snapshot.empty) {
-        alert("Không có môn học nào trong tuần này để xóa!");
         setLoading(false);
-        return;
+        return alert("Không có môn học nào trong tuần này để xóa!");
       }
       const batch = writeBatch(db);
       snapshot.forEach(docSnap => batch.delete(docSnap.ref));
@@ -647,25 +572,20 @@
     }
   }
 
-  // --- LOGIC CHO MODAL QUẢN LÝ USER ---
   const userManagementModal = document.getElementById('user-management-modal');
   const userListContainer = document.getElementById('user-list-container');
 
   window.openUserManagementModal = async () => {
+    userListContainer.innerHTML = '<div class="spinner mx-auto"></div>';
+    userManagementModal.classList.remove('hidden');
     const userDocs = await getDocs(usersCollectionRef);
     let html = `
       <div class="grid grid-cols-4 gap-2 font-bold p-2 border-b border-custom">
-        <div>Email</div>
-        <div class="text-center">Thêm</div>
-        <div class="text-center">Sửa</div>
-        <div class="text-center">Xóa</div>
-      </div>
-    `;
-
+        <div>Email</div><div class="text-center">Thêm</div><div class="text-center">Sửa</div><div class="text-center">Xóa</div>
+      </div>`;
     userDocs.forEach(docSnap => {
         const user = docSnap.data();
         if (user.role === 'admin') return;
-
         const perms = user.permissions || {};
         html += `
           <div class="grid grid-cols-4 gap-2 items-center p-2 border-b border-custom hover:bg-tertiary">
@@ -673,20 +593,16 @@
             <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="create" ${perms.create ? 'checked' : ''} class="w-5 h-5"></div>
             <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="edit" ${perms.edit ? 'checked' : ''} class="w-5 h-5"></div>
             <div class="text-center"><input type="checkbox" data-uid="${docSnap.id}" data-perm="delete" ${perms.delete ? 'checked' : ''} class="w-5 h-5"></div>
-          </div>
-        `;
+          </div>`;
     });
     userListContainer.innerHTML = html;
     
     userListContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
       checkbox.addEventListener('change', async (e) => {
-        const uid = e.target.dataset.uid;
-        const perm = e.target.dataset.perm;
+        const { uid, perm } = e.target.dataset;
         const value = e.target.checked;
-        
-        const userDocRef = doc(db, "users", uid);
         try {
-          await updateDoc(userDocRef, { [`permissions.${perm}`]: value });
+          await updateDoc(doc(usersCollectionRef, uid), { [`permissions.${perm}`]: value });
           console.log(`Updated permission ${perm} for user ${uid} to ${value}`);
         } catch (error) {
           console.error("Failed to update permission:", error);
@@ -695,28 +611,13 @@
         }
       });
     });
-
-    userManagementModal.classList.remove('hidden');
   }
 
-  window.closeUserManagementModal = () => {
-    userManagementModal.classList.add('hidden');
-  }
-
-  document.getElementById('manage-users-btn').addEventListener('click', () => {
-      openUserManagementModal();
-      closeSidebar();
-  });
+  window.closeUserManagementModal = () => userManagementModal.classList.add('hidden');
+  document.getElementById('manage-users-btn').addEventListener('click', () => { openUserManagementModal(); closeSidebar(); });
   
-
-  // --- CÁC HÀM CŨ VÀ EVENT LISTENERS (giữ nguyên không thay đổi nhiều) ---
-  // (Phần này chứa các hàm như updateTheme, getWeekDateRange, formatDate, reorderTasksInDay, renderTasks, setupWeekListener, initializeCalendar, copyLastWeekSchedule, v.v...)
-  // Vì chúng quá dài và không thay đổi, tôi sẽ không lặp lại toàn bộ ở đây để giữ câu trả lời gọn gàng.
-  // Bạn chỉ cần đảm bảo rằng chúng vẫn có trong file của bạn.
-  
-  // Các hàm tiện ích
-  function updateTheme(theme){currentTheme=theme,document.documentElement.setAttribute("data-theme",theme),localStorage.setItem("theme",theme),updateThemeButton(),calendarVisible&&calendarInstance&&setTimeout(()=>{calendarInstance.render()},100)}function updateThemeButton(){const e=document.getElementById("theme-icon"),t=document.getElementById("theme-text");"dark"===currentTheme?(e.className="fas fa-sun",t.textContent="Chế độ sáng"):(e.className="fas fa-moon",t.textContent="Chế độ tối")}function setLoading(e){isLoading=e;const t=document.getElementById("loading-spinner"),n=document.getElementById("sync-dot");e?(t.classList.remove("hidden"),n.style.backgroundColor="orange"):t.classList.add("hidden")}function updateViewButton(){const e=document.getElementById("view-text"),t=document.getElementById("view-icon");calendarVisible?(e.textContent="Chuyển xem tuần",t.className="fas fa-list"):(e.textContent="Chuyển xem tháng",t.className="fas fa-calendar")}function getWeekDateRange(e){const t=new Date(e),n=t.getDay(),o=0===n?6:n-1;t.setDate(e.getDate()-o),t.setHours(0,0,0,0);const s=new Date(t);return s.setDate(t.getDate()+6),s.setHours(23,59,59,999),{start:t,end:s}}function formatDate(e){if("string"==typeof e)return e;const t=e.getFullYear(),n=String(e.getMonth()+1).padStart(2,"0"),o=String(e.getDate()).padStart(2,"0");return`${t}-${n}-${o}`}function updateDateDisplay(){const{start:e,end:t}=getWeekDateRange(currentDate),n={day:"2-digit",month:"2-digit"};document.getElementById("current-week-display").textContent=`Tuần từ ${e.toLocaleDateString("vi-VN",n)} đến ${t.toLocaleDateString("vi-VN",n)}`}async function reorderTasksInDay(e,t){const n=Array.from(t).map((e,t)=>({id:e.dataset.taskId,order:t+1})),o=writeBatch(db);n.forEach(e=>{const t=doc(db,"artifacts",appId,"public","data","tasks",e.id);o.update(t,{order:e.order,updatedAt:(new Date).toISOString()})});try{await o.commit()}catch(e){console.error("Error reordering tasks:",e)}}const renderTasks=throttle(e=>{Object.keys(e).forEach(t=>{const n=document.getElementById(`tasks-${t}`);if(!n)return;const o=document.createDocumentFragment();e[t].sort((e,t)=>(e.order||0)-(t.order||0)||(e.text||"").localeCompare(t.text||"")),e[t].forEach((e,s)=>{const a=e.id+"-"+e.updatedAt+"-"+e.order;let r;if(tasksCache.has(a))r=tasksCache.get(a);else{r=document.createElement("div"),r.className="task-item p-2 mb-1 rounded transition-all hover:shadow-md",r.style.backgroundColor=e.color||"#e85499",r.textContent=e.text||"(không tên)",r.setAttribute("draggable","true");const t=document.createElement("i");t.className="fas fa-grip-lines drag-handle",r.appendChild(t),tasksCache.set(a,r)}r.dataset.taskId=e.id,r.dataset.taskDay=e.day||"",r.dataset.taskDate=e.date||"",r.dataset.taskOrder=e.order||s,setupTaskEventListeners(r,e,t),o.appendChild(r)}),n.innerHTML="",n.appendChild(o)})},50);function setupTaskEventListeners(e,t,n){e.addEventListener("click",n=>{n.target.classList.contains("drag-handle")||(n.stopPropagation(),openEditTaskModal(t))}),e.addEventListener("dragstart",n=>{draggedElement=n.target,n.dataTransfer.setData("text/plain",t.id),n.dataTransfer.effectAllowed="move",setTimeout(()=>{n.target.classList.add("dragging")},0)}),e.addEventListener("dragend",e=>{e.target.classList.remove("dragging"),draggedElement=null,document.querySelectorAll(".drag-over-container").forEach(e=>e.classList.remove("drag-over-container")),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"))}),e.addEventListener("dragover",t=>{if(draggedElement&&draggedElement!==e&&draggedElement.dataset.taskDay===e.dataset.taskDay){t.preventDefault();const n=e.parentElement,o=getDragAfterElement(n,t.clientY);null==o?n.appendChild(draggedElement):n.insertBefore(draggedElement,o)}})}function getDragAfterElement(e,t){const n=[...e.querySelectorAll(".task-item:not(.dragging)")];return n.reduce((e,n)=>{const o=n.getBoundingClientRect(),s=t-o.top-o.height/2;return s<0&&s>e.offset?{offset:s,element:n}:e},{offset:Number.NEGATIVE_INFINITY}).element}function initDayCardDropHandlers(){document.querySelectorAll(".day-card").forEach(e=>{e.addEventListener("dragover",e=>e.preventDefault()),e.addEventListener("dragenter",t=>{t.preventDefault();const n=e.querySelector(".task-container");draggedElement&&n&&draggedElement.parentElement!==n&&e.classList.add("drag-over")}),e.addEventListener("dragleave",t=>{e.classList.remove("drag-over")}),e.addEventListener("drop",t=>{if(t.preventDefault(),!draggedElement)return;e.classList.remove("drag-over");const n=e.closest(".day-card"),o=n.querySelector(".task-container"),s=draggedElement.dataset.taskId,a=draggedElement.dataset.taskDay,r=n.id;if(a!==r){const e=getDragAfterElement(o,t.clientY);e?o.insertBefore(draggedElement,e):o.appendChild(draggedElement),draggedElement.dataset.taskDay=r;const{start:i}=getWeekDateRange(currentDate),c=new Date(i);c.setDate(i.getDate()+dayMap[r]);const d=doc(db,"artifacts",appId,"public","data","tasks",s);setDoc(d,{day:r,date:formatDate(c),updatedAt:(new Date).toISOString()},{merge:!0}).catch(e=>{console.error("Lỗi khi di chuyển task:",e),setupWeekListener()});const l=document.getElementById(`tasks-${a}`);l&&reorderTasksInDay(a,l.querySelectorAll(".task-item")),reorderTasksInDay(r,o.querySelectorAll(".task-item"))}else reorderTasksInDay(r,o.querySelectorAll(".task-item"))})})}
-  function setupWeekListener(){unsubscribeWeek&&unsubscribeWeek(),tasksCache.clear(),updateDateDisplay(),setLoading(!0);const{start:e,end:t}=getWeekDateRange(currentDate),n=formatDate(e);currentWeekId=n;const o=query(tasksCollectionRef,where("date",">=",formatDate(e)),where("date","<=",formatDate(t)));unsubscribeWeek=onSnapshot(o,e=>{if(currentWeekId!==n)return;document.getElementById("sync-dot").style.backgroundColor="green";const o={T2:[],T3:[],T4:[],T5:[],T6:[],T7:[],CN:[]};e.forEach(e=>{const t=e.data();t.day&&o[t.day]&&o[t.day].push({id:e.id,...t})}),renderTasks(o),setLoading(!1)},e=>{console.error("Week listener error:",e),document.getElementById("sync-dot").style.backgroundColor="red",setLoading(!1)})}function fetchAndRenderMonthEvents(e){unsubscribeMonth&&unsubscribeMonth(),setLoading(!0);const t=formatDate(e.start),n=formatDate(e.end),o=query(tasksCollectionRef,where("date",">=",t),where("date","<=",n));unsubscribeMonth=onSnapshot(o,e=>{const t=e.docs.map(e=>{const t={id:e.id,...e.data()};return{id:t.id,title:t.text||"(không tên)",start:t.date,allDay:!0,backgroundColor:t.color||"#e85499",borderColor:t.color||"#e85499",extendedProps:{day:t.day,updatedAt:t.updatedAt,order:t.order}}});calendarInstance&&(calendarInstance.removeAllEvents(),calendarInstance.addEventSource(t)),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="green"},e=>{console.error("Month listener error:",e),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="red"})}function initializeCalendar(){if(calendarInstance)return;const e=document.getElementById("calendar");calendarInstance=new FullCalendar.Calendar(e,{initialView:"dayGridMonth",locale:"vi",height:"auto",headerToolbar:{left:"prev,next today",center:"title",right:"dayGridMonth,dayGridWeek"},datesSet:e=>{fetchAndRenderMonthEvents(e.view)},dateClick:e=>{openAddTaskModal(e.date)},eventClick:e=>{const t=e.event;openEditTaskModal({id:t.id,text:t.title,date:formatDate(new Date(t.start)),day:t.extendedProps?.day,color:t.backgroundColor,updatedAt:t.extendedProps?.updatedAt,order:t.extendedProps?.order})},dayMaxEventRows:!0}),calendarInstance.render()}async function copyLastWeekSchedule(){if(!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?"))return;setLoading(!0);const e=new Date(currentDate);e.setDate(currentDate.getDate()-7);const{start:t,end:n}=getWeekDateRange(e),o=query(tasksCollectionRef,where("date",">=",formatDate(t)),where("date","<=",formatDate(n)));try{const e=await getDocs(o);if(e.empty)return void alert("Không tìm thấy môn học nào ở tuần trước để sao chép!");const{start:t}=getWeekDateRange(currentDate),s=writeBatch(db);e.forEach(e=>{const n=e.data(),o=dayMap[n.day];if(void 0!==o){const a=new Date(t);a.setDate(t.getDate()+o);const r={...n,date:formatDate(a),createdAt:(new Date).toISOString(),updatedAt:(new Date).toISOString(),order:n.order||1},i=doc(collection(db,"artifacts",appId,"public","data","tasks"));s.set(i,r)}}),await s.commit(),alert(`Đã sao chép ${e.size} môn học từ tuần trước!`)}catch(e){console.error("Lỗi khi commit batch:",e),alert("Đã xảy ra lỗi khi sao chép. Vui lòng thử lại!")}finally{setLoading(!1)}}
+  function updateTheme(theme){currentTheme=theme,document.documentElement.setAttribute("data-theme",theme),localStorage.setItem("theme",theme),updateThemeButton(),calendarVisible&&calendarInstance&&setTimeout(()=>{calendarInstance.render()},100)}function updateThemeButton(){const e=document.getElementById("theme-icon"),t=document.getElementById("theme-text");"dark"===currentTheme?(e.className="fas fa-sun",t.textContent="Chế độ sáng"):(e.className="fas fa-moon",t.textContent="Chế độ tối")}function setLoading(e){isLoading=e;const t=document.getElementById("loading-spinner"),n=document.getElementById("sync-dot");e?(t.classList.remove("hidden"),n.style.backgroundColor="orange"):t.classList.add("hidden")}function updateViewButton(){const e=document.getElementById("view-text"),t=document.getElementById("view-icon");calendarVisible?(e.textContent="Chuyển xem tuần",t.className="fas fa-list"):(e.textContent="Chuyển xem tháng",t.className="fas fa-calendar")}function getWeekDateRange(e){const t=new Date(e),n=t.getDay(),o=0===n?6:n-1;t.setDate(e.getDate()-o),t.setHours(0,0,0,0);const s=new Date(t);return s.setDate(t.getDate()+6),s.setHours(23,59,59,999),{start:t,end:s}}function formatDate(e){if("string"==typeof e)return e;const t=e.getFullYear(),n=String(e.getMonth()+1).padStart(2,"0"),o=String(e.getDate()).padStart(2,"0");return`${t}-${n}-${o}`}function updateDateDisplay(){const{start:e,end:t}=getWeekDateRange(currentDate),n={day:"2-digit",month:"2-digit"};document.getElementById("current-week-display").textContent=`Tuần từ ${e.toLocaleDateString("vi-VN",n)} đến ${t.toLocaleDateString("vi-VN",n)}`}const renderTasks=throttle(e=>{Object.keys(e).forEach(t=>{const n=document.getElementById(`tasks-${t}`);if(!n)return;const o=document.createDocumentFragment();e[t].sort((e,t)=>(e.order||0)-(t.order||0)||(e.text||"").localeCompare(t.text||"")),e[t].forEach((e,s)=>{const a=e.id+"-"+e.updatedAt+"-"+e.order;let r;if(tasksCache.has(a))r=tasksCache.get(a);else{r=document.createElement("div"),r.className="task-item p-2 mb-1 rounded transition-all hover:shadow-md",r.style.backgroundColor=e.color||"#e85499",r.textContent=e.text||"(không tên)",r.setAttribute("draggable","true");const t=document.createElement("i");t.className="fas fa-grip-lines drag-handle",r.appendChild(t),tasksCache.set(a,r)}r.dataset.taskId=e.id,r.dataset.taskDay=e.day||"",r.dataset.taskDate=e.date||"",r.dataset.taskOrder=e.order||s,setupTaskEventListeners(r,e,t),o.appendChild(r)}),n.innerHTML="",n.appendChild(o)})},50);function setupTaskEventListeners(e,t,n){e.addEventListener("click",n=>{n.target.classList.contains("drag-handle")||(n.stopPropagation(),openEditTaskModal(t))}),e.addEventListener("dragstart",n=>{draggedElement=n.target,n.dataTransfer.setData("text/plain",t.id),n.dataTransfer.effectAllowed="move",setTimeout(()=>{n.target.classList.add("dragging")},0)}),e.addEventListener("dragend",e=>{e.target.classList.remove("dragging"),draggedElement=null,document.querySelectorAll(".drag-over-container").forEach(e=>e.classList.remove("drag-over-container")),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"))}),e.addEventListener("dragover",t=>{if(draggedElement&&draggedElement!==e&&draggedElement.dataset.taskDay===e.dataset.taskDay){t.preventDefault();const n=e.parentElement,o=getDragAfterElement(n,t.clientY);null==o?n.appendChild(draggedElement):n.insertBefore(draggedElement,o)}})}function getDragAfterElement(e,t){const n=[...e.querySelectorAll(".task-item:not(.dragging)")];return n.reduce((e,n)=>{const o=n.getBoundingClientRect(),s=t-o.top-o.height/2;return s<0&&s>e.offset?{offset:s,element:n}:e},{offset:Number.NEGATIVE_INFINITY}).element}function initDayCardDropHandlers(){document.querySelectorAll(".day-card").forEach(e=>{e.addEventListener("dragover",e=>e.preventDefault()),e.addEventListener("dragenter",t=>{t.preventDefault();const n=e.querySelector(".task-container");draggedElement&&n&&draggedElement.parentElement!==n&&e.classList.add("drag-over")}),e.addEventListener("dragleave",t=>{e.classList.remove("drag-over")}),e.addEventListener("drop",async t=>{if(t.preventDefault(),!draggedElement)return;e.classList.remove("drag-over");const n=e.closest(".day-card"),o=n.querySelector(".task-container"),s=draggedElement.dataset.taskId,a=draggedElement.dataset.taskDay,r=n.id;if(a===r)return void await reorderTasksInDay(r,o.querySelectorAll(".task-item"));if(!hasPermission("edit"))return alert("Bạn không có quyền di chuyển môn học."),void setupWeekListener();const i=getDragAfterElement(o,t.clientY);i?o.insertBefore(draggedElement,i):o.appendChild(draggedElement),draggedElement.dataset.taskDay=r;const{start:c}=getWeekDateRange(currentDate),d=new Date(c);d.setDate(c.getDate()+dayMap[r]);try{await updateDoc(doc(tasksCollectionRef,s),{day:r,date:formatDate(d),updatedAt:(new Date).toISOString()});const e=document.getElementById(`tasks-${a}`);e&&await reorderTasksInDay(a,e.querySelectorAll(".task-item")),await reorderTasksInDay(r,o.querySelectorAll(".task-item"))}catch(e){console.error("Lỗi khi di chuyển task:",e),setupWeekListener()}})})})}
+  function setupWeekListener(){unsubscribeWeek&&unsubscribeWeek(),tasksCache.clear(),updateDateDisplay(),setLoading(!0);const{start:e,end:t}=getWeekDateRange(currentDate),n=formatDate(e);currentWeekId=n;const o=query(tasksCollectionRef,where("date",">=",formatDate(e)),where("date","<=",formatDate(t)));unsubscribeWeek=onSnapshot(o,e=>{if(currentWeekId!==n)return;document.getElementById("sync-dot").style.backgroundColor="green";const o={T2:[],T3:[],T4:[],T5:[],T6:[],T7:[],CN:[]};e.forEach(e=>{const t=e.data();t.day&&o[t.day]&&o[t.day].push({id:e.id,...t})}),renderTasks(o),setLoading(!1)},e=>{console.error("Week listener error:",e),document.getElementById("sync-dot").style.backgroundColor="red",setLoading(!1)})}function fetchAndRenderMonthEvents(e){unsubscribeMonth&&unsubscribeMonth(),setLoading(!0);const t=formatDate(e.start),n=formatDate(e.end),o=query(tasksCollectionRef,where("date",">=",t),where("date","<=",n));unsubscribeMonth=onSnapshot(o,e=>{const t=e.docs.map(e=>{const t={id:e.id,...e.data()};return{id:t.id,title:t.text||"(không tên)",start:t.date,allDay:!0,backgroundColor:t.color||"#e85499",borderColor:t.color||"#e85499",extendedProps:{day:t.day,updatedAt:t.updatedAt,order:t.order}}});calendarInstance&&(calendarInstance.removeAllEvents(),calendarInstance.addEventSource(t)),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="green"},e=>{console.error("Month listener error:",e),setLoading(!1),document.getElementById("sync-dot").style.backgroundColor="red"})}function initializeCalendar(){if(calendarInstance)return;const e=document.getElementById("calendar");calendarInstance=new FullCalendar.Calendar(e,{initialView:"dayGridMonth",locale:"vi",height:"auto",headerToolbar:{left:"prev,next today",center:"title",right:"dayGridMonth,dayGridWeek"},datesSet:e=>{fetchAndRenderMonthEvents(e.view)},dateClick:e=>{openAddTaskModal(e.date)},eventClick:e=>{const t=e.event;openEditTaskModal({id:t.id,text:t.title,date:formatDate(new Date(t.start)),day:t.extendedProps?.day,color:t.backgroundColor,updatedAt:t.extendedProps?.updatedAt,order:t.extendedProps?.order})},dayMaxEventRows:!0}),calendarInstance.render()}async function copyLastWeekSchedule(){if(!confirm("Bạn có muốn sao chép toàn bộ lịch của tuần trước sang tuần này không?"))return;setLoading(!0);const e=new Date(currentDate);e.setDate(currentDate.getDate()-7);const{start:t,end:n}=getWeekDateRange(e),o=query(tasksCollectionRef,where("date",">=",formatDate(t)),where("date","<=",formatDate(n)));try{const e=await getDocs(o);if(e.empty)return setLoading(!1),alert("Không tìm thấy môn học nào ở tuần trước để sao chép!");const{start:t}=getWeekDateRange(currentDate),s=writeBatch(db);e.forEach(e=>{const n=e.data(),o=dayMap[n.day];if(void 0!==o){const a=new Date(t);a.setDate(t.getDate()+o);const r={...n,date:formatDate(a),createdAt:(new Date).toISOString(),updatedAt:(new Date).toISOString(),order:n.order||1};s.set(doc(tasksCollectionRef),r)}}),await s.commit(),alert(`Đã sao chép ${e.size} môn học từ tuần trước!`)}catch(e){console.error("Lỗi khi commit batch:",e),alert("Đã xảy ra lỗi khi sao chép. Vui lòng thử lại!")}finally{setLoading(!1)}}
   window.closeModal = () => { document.getElementById('task-modal').classList.add('hidden'); currentEditingTask = null; };
   const debouncedWeekNavigation = debounce((direction) => { currentDate.setDate(currentDate.getDate() + (direction * 7)); setupWeekListener(); }, 100);
   document.getElementById('prev-week-btn').addEventListener('click', () => debouncedWeekNavigation(-1));
@@ -733,17 +634,7 @@
   document.getElementById('copy-last-week-btn').addEventListener('click', async (e) => { e.stopPropagation(); await copyLastWeekSchedule(); closeSidebar(); });
   document.getElementById('copy-last-week-btn-inline').addEventListener('click', copyLastWeekSchedule);
   document.getElementById('delete-all-week-btn').addEventListener('click', async (e) => { e.stopPropagation(); await deleteAllWeekTasks(); closeSidebar(); });
-  document.getElementById('toggle-view-btn').addEventListener('click', (e) => {
-    e.stopPropagation(); calendarVisible = !calendarVisible;
-    const weekView = document.getElementById('week-view');
-    const monthView = document.getElementById('month-view');
-    const weekNav = document.querySelector('.flex.items-center.p-2.gap-2');
-    weekView.classList.toggle('hidden', calendarVisible);
-    monthView.classList.toggle('hidden', !calendarVisible);
-    weekNav.classList.toggle('hidden', calendarVisible);
-    if (calendarVisible) { if (unsubscribeWeek) { unsubscribeWeek(); unsubscribeWeek = null; } initializeCalendar(); } else { if (unsubscribeMonth) { unsubscribeMonth(); unsubscribeMonth = null; } setupWeekListener(); }
-    updateViewButton(); closeSidebar();
-  });
+  document.getElementById('toggle-view-btn').addEventListener('click', (e) => { e.stopPropagation(); calendarVisible = !calendarVisible; const weekView = document.getElementById('week-view'); const monthView = document.getElementById('month-view'); const weekNav = document.querySelector('.flex.items-center.p-2.gap-2'); weekView.classList.toggle('hidden', calendarVisible); monthView.classList.toggle('hidden', !calendarVisible); weekNav.classList.toggle('hidden', calendarVisible); if (calendarVisible) { if (unsubscribeWeek) { unsubscribeWeek(); unsubscribeWeek = null; } initializeCalendar(); } else { if (unsubscribeMonth) { unsubscribeMonth(); unsubscribeMonth = null; } setupWeekListener(); } updateViewButton(); closeSidebar(); });
   document.getElementById('task-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.addEventListener('keydown', throttle((e) => {
     const modalHidden = document.getElementById('task-modal').classList.contains('hidden');
@@ -770,7 +661,6 @@
   }
 
   init();
-
 </script>
 
 </body>
