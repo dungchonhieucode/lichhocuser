@@ -1,24 +1,21 @@
-// Import các hàm cần thiết từ Firebase SDK
+// Import các hàm cần thiết từ Firebase Client SDK
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, query, where, getDocs, writeBatch, doc } from "firebase/firestore";
 
-// 1. Lấy thông tin cấu hình Firebase từ GitHub Secrets (được truyền vào qua biến môi trường)
+// =================================================================
+// == DÁN TRỰC TIẾP firebaseConfig CỦA BẠN VÀO ĐÂY ==
+// =================================================================
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
+  apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs", // <-- THAY BẰNG API KEY CỦA BẠN
+  authDomain: "lichhoc-13811.firebaseapp.com",        // <-- THAY BẰNG AUTH DOMAIN CỦA BẠN
+  projectId: "lichhoc-13811",                         // <-- THAY BẰNG PROJECT ID CỦA BẠN
+  storageBucket: "lichhoc-13811.firebasestorage.app", // <-- THAY BẰNG STORAGE BUCKET CỦA BẠN
+  messagingSenderId: "495829238108",                  // <-- THAY BẰNG SENDER ID CỦA BẠN
+  appId: "1:495829238108:web:970c3799dd94d662edc199"   // <-- THAY BẰNG APP ID CỦA BẠN
 };
+// =================================================================
 
-// Kiểm tra xem các biến môi trường đã được cung cấp chưa
-if (!firebaseConfig.projectId || !firebaseConfig.apiKey) {
-    console.error("Firebase configuration environment variables are not set.");
-    process.exit(1); // Thoát với mã lỗi
-}
-
-// 2. Khởi tạo Firebase
+// Khởi tạo Firebase với config đã cung cấp
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const appId = firebaseConfig.projectId;
@@ -34,11 +31,11 @@ function formatDate(date) {
     return `${y}-${m}-${d}`;
 }
 
-// Hàm tiện ích để lấy khoảng ngày của một tuần
+// Hàm tiện ích để lấy khoảng ngày của một tuần (T2-CN)
 function getWeekDateRange(date) {
     const start = new Date(date);
     const dayOfWeek = start.getDay();
-    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // T2 là ngày đầu tuần
+    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
     start.setDate(date.getDate() - diff);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
@@ -47,7 +44,7 @@ function getWeekDateRange(date) {
     return { start, end };
 }
 
-// 3. Logic chính để sao chép lịch học
+// Logic chính để sao chép lịch học
 async function copyLastWeekSchedule() {
     console.log("Bắt đầu tiến trình sao chép lịch tuần...");
 
@@ -55,7 +52,7 @@ async function copyLastWeekSchedule() {
     const nextWeekDate = new Date(today);
     nextWeekDate.setDate(today.getDate() + 1); // Ngày bắt đầu của tuần mới (Thứ Hai)
 
-    const { start: lastStart, end: lastEnd } = getWeekDateRange(today); // Tuần hiện tại (sắp kết thúc)
+    const { start: lastStart, end: lastEnd } = getWeekDateRange(today); // Tuần hiện tại
     const { start: nextWeekStart } = getWeekDateRange(nextWeekDate); // Tuần tới
 
     console.log(`Đang tìm kiếm lịch trong khoảng: ${formatDate(lastStart)} đến ${formatDate(lastEnd)}`);
@@ -84,7 +81,6 @@ async function copyLastWeekSchedule() {
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                 };
-                // Tạo một document mới để không bị trùng ID
                 const newRef = doc(collection(db, "artifacts", appId, "public", "data", "tasks"));
                 batch.set(newRef, newTask);
             }
@@ -93,8 +89,8 @@ async function copyLastWeekSchedule() {
         await batch.commit();
         console.log(`ĐÃ SAO CHÉP THÀNH CÔNG ${snap.size} môn học từ tuần trước sang tuần mới!`);
     } catch (err) {
-        console.error("LỖI nghiêm trọng khi sao chép lịch:", err);
-        process.exit(1); // Thoát với mã lỗi
+        console.error("LỖI khi sao chép lịch:", err);
+        process.exit(1);
     }
 }
 
