@@ -1,0 +1,63 @@
+{
+  "name": "lichhoc-automation",
+  "version": "1.0.0",
+  "description": "Script to automatically copy weekly schedule.",
+  "main": "scripts/copy-weekly-schedule.js",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/copy-weekly-schedule.js"
+  },
+  "dependencies": {
+    "firebase": "^10.0.0"
+  }
+}```
+**Lưu ý:** Dòng `"type": "module",` là rất quan trọng để có thể sử dụng cú pháp `import/export` trong file script.
+
+### Bước 4: Tạo Workflow cho GitHub Actions
+
+1.  Trong repository của bạn, tạo một thư mục `.github`, bên trong đó tạo tiếp thư mục `workflows`.
+2.  Trong thư mục `workflows`, tạo một file YAML, ví dụ: `copy_schedule.yml`.
+
+**`.github/workflows/copy_schedule.yml`**
+```yaml
+name: Copy Weekly Schedule
+
+on:
+  # Lên lịch chạy vào 23:30 Chủ Nhật hàng tuần (giờ UTC)
+  # 30 23 * * 0 tương ứng với 6:30 sáng Thứ Hai giờ Việt Nam (UTC+7)
+  # Nếu bạn muốn chạy lúc 23:30 Chủ Nhật giờ Việt Nam, hãy đặt là 16:30 UTC: '30 16 * * 0'
+  schedule:
+    - cron: '30 16 * * 0'
+
+  # Cho phép chạy thủ công từ tab Actions để kiểm tra
+  workflow_dispatch:
+
+jobs:
+  copy-schedule:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Bước 1: Checkout code từ repository về máy ảo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Bước 2: Cài đặt môi trường Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Sử dụng phiên bản Node.js 18 hoặc mới hơn
+
+      # Bước 3: Cài đặt các thư viện cần thiết từ package.json
+      - name: Install dependencies
+        run: npm install
+
+      # Bước 4: Chạy script sao chép với các biến môi trường từ Secrets
+      - name: Run copy schedule script
+        run: node scripts/copy-weekly-schedule.js
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
