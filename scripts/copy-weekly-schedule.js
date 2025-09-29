@@ -5,12 +5,12 @@ import { getFirestore, collection, query, where, getDocs, writeBatch, doc } from
 // Cấu hình Firebase được nhúng trực tiếp vào script.
 // Các thông tin này đã chính xác với dự án của bạn.
 const firebaseConfig = {
-  apiKey: "AIzaSyAlnG4jxdnaPc0nOSLBKJbwop72bExrbzs",
-  authDomain: "lichhoc-13811.firebaseapp.com",
-  projectId: "lichhoc-13811",
-  storageBucket: "lichhoc-13811.firebasestorage.app",
-  messagingSenderId: "495829238108",
-  appId: "1:495829238108:web:970c3799dd94d662edc199"
+    apiKey: "AIzaSyDUQpOlvgn1TwT8TkfdHyesl1bc3Qbn0pM",
+    authDomain: "dulieulichhoc.firebaseapp.com",
+    projectId: "dulieulichhoc",
+    storageBucket: "dulieulichhoc.firebasestorage.app",
+    messagingSenderId: "46236518897",
+    appId: "1:46236518897:web:8a6692006e802902965c50"
 };
 
 // Khởi tạo ứng dụng Firebase
